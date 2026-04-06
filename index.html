@@ -445,6 +445,16 @@ async function api(sys, usr, max = 1500) {
   if (d.error) throw new Error(d.error.message);
   let raw = (d.content?.find(b => b.type === 'text')?.text || '').trim();
   raw = raw.replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/\s*```$/, '').trim();
+  const start = raw.search(/[{[]/);
+  if (start !== -1) {
+    const opener = raw[start], closer = opener === '{' ? '}' : ']';
+    let depth = 0, end = -1;
+    for (let i = start; i < raw.length; i++) {
+      if (raw[i] === opener) depth++;
+      else if (raw[i] === closer && --depth === 0) { end = i; break; }
+    }
+    if (end !== -1) raw = raw.slice(start, end + 1);
+  }
   return JSON.parse(raw);
 }
 
