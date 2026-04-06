@@ -151,7 +151,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
 <div class="wrap" id="main-app" style="display:none">
   <div class="logo-row"><div class="dot"></div><span class="logo-text">AVV Hoher List &middot; &Ouml;ffentlichkeitsarbeit</span></div>
   <h1>Redaktionsassistent</h1>
-  <div class="tagline">Sprachstil &middot; Menschlichkeit &middot; Tags &middot; Ausgabe &mdash; Wizard v2.2</div>
+  <div class="tagline">Sprachstil &middot; Menschlichkeit &middot; Tags &middot; Ausgabe &mdash; Wizard v2.3</div>
 
   <div class="api-bar">
     <span style="flex-shrink:0;font-weight:500">API-Key:</span>
@@ -503,9 +503,8 @@ Fuer "fundstellen": Kopiere WORTWOERTLICH Saetze oder Satzteile aus dem Eingabet
 - typ "fehler" = kritisch oder sachlich falsch (tipp = kurzer Hinweis, vorschlag = Ersatztext)
 Mindestens 2 ok-Fundstellen einbauen. Maximal 8 Fundstellen gesamt.
 Bewertungen "ton", "satzbau", "laenge" jeweils als 1 kurzer Satz.
-WICHTIG: Fuelle zuerst die Bewertungsfelder, dann fundstellen, dann verbesserter_text.
-Antworte NUR mit reinem JSON:
-{"gesamt":"ok|warn|fehler","ton":"ok|warn|fehler","ton_text":"1 Satz Bewertung","satzbau":"ok|warn|fehler","satzbau_text":"1 Satz Bewertung","laenge":"ok|warn|fehler","laenge_text":"1 Satz Bewertung","fundstellen":[{"phrase":"EXAKTER Auszug aus dem Text","typ":"ok|warn|fehler","tipp":"Erklaerung was gut ist oder was verbessert werden soll","vorschlag":"bei warn/fehler: konkreter Alternativtext fuer diese Stelle, sonst leer lassen"}],"verbesserter_text":"vollstaendig ueberarbeiteter Text"}`;
+Antworte NUR mit reinem JSON (KEIN verbesserter_text):
+{"gesamt":"ok|warn|fehler","ton":"ok|warn|fehler","ton_text":"1 Satz","satzbau":"ok|warn|fehler","satzbau_text":"1 Satz","laenge":"ok|warn|fehler","laenge_text":"1 Satz","fundstellen":[{"phrase":"EXAKTER Auszug aus dem Text","typ":"ok|warn|fehler","tipp":"Erklaerung","vorschlag":"bei warn/fehler: Alternativtext fuer genau diese Stelle, sonst leer"}]}`;
 
   const sysMenschlich = `Du bist Redaktionsassistent der AVV. Schreibmodus: ${modus}.
 MENSCHLICHKEITS-GUIDE:
@@ -518,8 +517,8 @@ Antworte NUR mit reinem JSON:
 {"anzahl_gefunden":0,"zusammenfassung":"","muster":[{"nr":1,"name":"","gefunden":false,"hinweis":"","vorschlag":"","phrase":""}]}`;
 
   const [r1, r2] = await Promise.allSettled([
-    api(sysSprachstil, (cat ? 'Kategorie: ' + cat + '\n' : '') + 'Beitragstext:\n' + cachedText, 3000),
-    api(sysMenschlich, 'Schreibmodus: ' + modus + '\n\nBeitragstext:\n' + cachedText, 2500)
+    api(sysSprachstil, (cat ? 'Kategorie: ' + cat + '\n' : '') + 'Beitragstext:\n' + cachedText, 2000),
+    api(sysMenschlich, 'Schreibmodus: ' + modus + '\n\nBeitragstext:\n' + cachedText, 2000)
   ]);
 
   const errors = [];
@@ -532,10 +531,8 @@ Antworte NUR mit reinem JSON:
     setBadge('badge-satzbau', p.satzbau); setHTML('text-satzbau', p.satzbau_text);
     setBadge('badge-laenge', p.laenge); setHTML('text-laenge', p.laenge_text);
     if (Array.isArray(p.fundstellen)) allFundstellen = allFundstellen.concat(p.fundstellen);
-    if (p.verbesserter_text) {
-      cachedVerbesserterText = p.verbesserter_text;
-      document.getElementById('btn-apply-vsl').style.display = 'inline-flex';
-    }
+    // verbesserter_text wird separat geladen (Button)
+    document.getElementById('btn-apply-vsl').style.display = 'inline-flex';
   } else { errors.push('Sprachstil: ' + r1.reason.message); }
 
   if (r2.status === 'fulfilled') {
@@ -615,16 +612,16 @@ function renderAnnotatedText(text, fundstellen) {
   document.getElementById('annot-box').innerHTML = html || escH(text).replace(/\n/g,'<br>');
 }
 
-// Einzelne Stelle übernehmen
+// Einzelne Stelle übernehmen (mit oder ohne Vorschlag)
 function applySegment(i) {
   const seg = annotSegments[i];
-  if (!seg || !seg.vorschlag) return;
+  if (!seg) return;
   const box = document.getElementById('annot-box');
   const span = box.querySelector('[data-seg="' + i + '"]');
-  if (span) {
-    span.outerHTML = escH(seg.vorschlag).replace(/\n/g,'<br>');
-    annotSegments[i] = {text: seg.vorschlag, typ:'neutral', tipp:'', vorschlag:''};
-  }
+  if (!span) return;
+  const replacement = seg.vorschlag || seg.text; // ohne Vorschlag: Original behalten, nur Markierung entfernen
+  span.outerHTML = escH(replacement).replace(/\n/g,'<br>');
+  annotSegments[i] = {text: replacement, typ:'neutral', tipp:'', vorschlag:''};
   syncAnnotToInput();
 }
 
@@ -643,16 +640,31 @@ function syncAnnotToInput() {
   updateMeta();
 }
 
-// Alle Verbesserungen auf einmal im annot-box übernehmen
-function applyVorschlag() {
-  if (!cachedVerbesserterText) return;
+// Alle Verbesserungen: verbesserter_text on-demand vom API laden und anzeigen
+async function applyVorschlag() {
+  const btn = document.getElementById('btn-apply-vsl');
+  if (cachedVerbesserterText) {
+    applyVerbesserterText(cachedVerbesserterText); return;
+  }
+  btn.textContent = 'Lade\u2026'; btn.disabled = true;
+  const modus = document.getElementById('modus').value, cat = document.getElementById('cat').value;
+  const sys = `Du bist Redaktionsassistent der AVV. Schreibmodus: ${modus}.
+SPRACHSTIL-GUIDE:\n${T.sprachstil || ''}
+Erstelle einen vollstaendig verbesserten Text. Behalte Inhalt und Stimme des Autors.
+Antworte NUR mit reinem JSON: {"verbesserter_text":"vollstaendig ueberarbeiteter Text"}`;
+  try {
+    const p = await api(sys, 'Originaltext:\n' + cachedText, 2000);
+    if (p.verbesserter_text) { cachedVerbesserterText = p.verbesserter_text; applyVerbesserterText(p.verbesserter_text); }
+  } catch(e) { btn.textContent = '\u26a0 Fehler: ' + e.message; }
+  btn.textContent = '\u2713 Alle Verbesserungen \u00fcbernehmen'; btn.disabled = false;
+}
+function applyVerbesserterText(txt) {
   const box = document.getElementById('annot-box');
-  box.innerHTML = escH(cachedVerbesserterText).replace(/\n/g,'<br>');
+  box.innerHTML = escH(txt).replace(/\n/g,'<br>');
   annotSegments = [];
-  cachedText = cachedVerbesserterText;
-  document.getElementById('txt').value = cachedVerbesserterText;
+  cachedText = txt;
+  document.getElementById('txt').value = txt;
   updateMeta();
-  cachedVerbesserterText = '';
   document.getElementById('btn-apply-vsl').style.display = 'none';
 }
 
