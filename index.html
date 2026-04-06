@@ -244,17 +244,14 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
       <div class="r-section">
         <div class="r-title">Ton &amp; Haltung <span class="badge" id="badge-ton"></span></div>
         <div class="r-text" id="text-ton"></div>
-        <div class="r-vorschlag" id="vsl-ton" style="display:none"><span class="r-vorschlag-lbl">Vorschlag</span><div id="vsl-ton-text"></div></div>
       </div>
       <div class="r-section">
         <div class="r-title">Satzbau &amp; Struktur <span class="badge" id="badge-satzbau"></span></div>
         <div class="r-text" id="text-satzbau"></div>
-        <div class="r-vorschlag" id="vsl-satzbau" style="display:none"><span class="r-vorschlag-lbl">Vorschlag</span><div id="vsl-satzbau-text"></div></div>
       </div>
       <div class="r-section">
         <div class="r-title">L&auml;nge &amp; Umfang <span class="badge" id="badge-laenge"></span></div>
         <div class="r-text" id="text-laenge"></div>
-        <div class="r-vorschlag" id="vsl-laenge" style="display:none"><span class="r-vorschlag-lbl">Vorschlag</span><div id="vsl-laenge-text"></div></div>
       </div>
       <div class="r-section">
         <div class="r-title">KI-Muster <span class="badge" id="badge-muster"></span></div>
@@ -262,7 +259,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
       </div>
     </div>
     <div class="btn-row">
-      <button class="btn-primary" onclick="goStep(3)">Weiter: Tags &rarr;</button>
+      <button class="btn-primary" onclick="goStep(3);runStep3()">Weiter: Tags &rarr;</button>
       <button class="btn-sec" onclick="resetAll()">Von vorne</button>
     </div>
   </div>
@@ -480,7 +477,7 @@ function startWizard() {
   const txt = document.getElementById('txt').value.trim();
   if (!txt) { const e = document.getElementById('err-1'); e.textContent = 'Bitte Beitragstext eingeben.'; e.style.display = 'block'; return; }
   document.getElementById('err-1').style.display = 'none';
-  cachedText = txt; done.clear(); done.add(1); goStep(2);
+  cachedText = txt; done.clear(); done.add(1); goStep(2); runStep2();
 }
 
 // ── Schritt 2: Sprachstil + Menschlichkeit ────────────────────────────────────
@@ -491,19 +488,19 @@ async function runStep2() {
   const cat = document.getElementById('cat').value, modus = document.getElementById('modus').value;
 
   const sysSprachstil = `Du bist Redaktionsassistent der AVV.
-Schreibmodus: ${modus}. Modus: ${procMode === 'generieren' ? 'Neu generieren' : 'Ueberarbeiten'}. Kategorie: ${cat || 'nicht angegeben'}.
+Schreibmodus: ${modus}. Kategorie: ${cat || 'nicht angegeben'}.
 SPRACHSTIL-GUIDE:
 ${T.sprachstil || '(nicht geladen)'}
 
-AUFGABE: Analysiere den Text. Gib fuer jede Rubrik eine Bewertung.
+AUFGABE: Analysiere den Text und markiere konkrete Textstellen.
 Fuer "fundstellen": Kopiere WORTWOERTLICH Saetze oder Satzteile aus dem Eingabetext.
-- typ "ok" = gelungene, mustergueltige Textstellen (tipp = was daran gut ist)
-- typ "warn" = verbesserungswuerdige Stellen (tipp = konkreter Vorschlag)
-- typ "fehler" = kritische Stellen, sachliche Fehler (tipp = was zu aendern ist)
-Mindestens 2-3 ok-Fundstellen, wenn Text gut ist.
-Erstelle auch einen vollstaendig verbesserten Text.
-Antworte NUR mit reinem JSON ohne Erklaerung:
-{"gesamt":"ok|warn|fehler","ton":"ok|warn|fehler","ton_text":"","ton_vorschlag":"","satzbau":"ok|warn|fehler","satzbau_text":"","satzbau_vorschlag":"","laenge":"ok|warn|fehler","laenge_text":"","laenge_vorschlag":"","fundstellen":[{"phrase":"EXAKTER Auszug aus dem Text","typ":"ok|warn|fehler","tipp":"Erklaerung","vorschlag":"bei warn/fehler: verbesserter Ersatztext fuer genau diese Stelle, sonst leer"}],"verbesserter_text":"vollstaendig ueberarbeiteter Text"}`;
+- typ "ok" = gut gelungene Stellen (tipp = kurz was gut ist, 1 Satz)
+- typ "warn" = Verbesserung moeglich (tipp = kurzer Hinweis, vorschlag = verbesserter Ersatztext)
+- typ "fehler" = kritisch oder sachlich falsch (tipp = kurzer Hinweis, vorschlag = Ersatztext)
+Mindestens 2 ok-Fundstellen einbauen. Maximal 8 Fundstellen gesamt.
+Bewertungen "ton", "satzbau", "laenge" jeweils als 1 kurzer Satz in "_text".
+Antworte NUR mit reinem JSON:
+{"gesamt":"ok|warn|fehler","ton":"ok|warn|fehler","ton_text":"1 Satz","satzbau":"ok|warn|fehler","satzbau_text":"1 Satz","laenge":"ok|warn|fehler","laenge_text":"1 Satz","fundstellen":[{"phrase":"EXAKTER Auszug","typ":"ok|warn|fehler","tipp":"kurzer Hinweis","vorschlag":"Ersatztext oder leer"}],"verbesserter_text":"vollstaendig ueberarbeiteter Text"}`;
 
   const sysMenschlich = `Du bist Redaktionsassistent der AVV. Schreibmodus: ${modus}.
 MENSCHLICHKEITS-GUIDE:
@@ -526,9 +523,9 @@ Antworte NUR mit reinem JSON:
   if (r1.status === 'fulfilled') {
     const p = r1.value;
     setBadge('badge-gesamt', p.gesamt);
-    setBadge('badge-ton', p.ton); setHTML('text-ton', p.ton_text); showVsl('ton', p.ton_vorschlag);
-    setBadge('badge-satzbau', p.satzbau); setHTML('text-satzbau', p.satzbau_text); showVsl('satzbau', p.satzbau_vorschlag);
-    setBadge('badge-laenge', p.laenge); setHTML('text-laenge', p.laenge_text); showVsl('laenge', p.laenge_vorschlag);
+    setBadge('badge-ton', p.ton); setHTML('text-ton', p.ton_text);
+    setBadge('badge-satzbau', p.satzbau); setHTML('text-satzbau', p.satzbau_text);
+    setBadge('badge-laenge', p.laenge); setHTML('text-laenge', p.laenge_text);
     if (Array.isArray(p.fundstellen)) allFundstellen = allFundstellen.concat(p.fundstellen);
     if (p.verbesserter_text) {
       cachedVerbesserterText = p.verbesserter_text;
@@ -639,15 +636,17 @@ function syncAnnotToInput() {
   updateMeta();
 }
 
-// Alle Verbesserungen auf einmal übernehmen
+// Alle Verbesserungen auf einmal im annot-box übernehmen
 function applyVorschlag() {
   if (!cachedVerbesserterText) return;
+  const box = document.getElementById('annot-box');
+  box.innerHTML = escH(cachedVerbesserterText).replace(/\n/g,'<br>');
+  annotSegments = [];
+  cachedText = cachedVerbesserterText;
   document.getElementById('txt').value = cachedVerbesserterText;
   updateMeta();
-  cachedText = cachedVerbesserterText;
-  done.delete(2); done.delete(3); done.delete(4);
   cachedVerbesserterText = '';
-  goStep(1);
+  document.getElementById('btn-apply-vsl').style.display = 'none';
 }
 
 // ── Schritt 3: Tags ────────────────────────────────────────────────────────────
