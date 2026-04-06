@@ -82,6 +82,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
 .muster-text{font-size:11px;color:#5F5E5A;line-height:1.6}
 .muster-vsl{margin-top:6px;background:#F0FBF7;border-left:3px solid #1D9E75;border-radius:0 4px 4px 0;padding:7px 9px;font-size:11px;color:#2C2C2A;line-height:1.65}
 .muster-vsl-lbl{font-size:9px;font-weight:700;color:#1D9E75;display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em}
+/* Tag styles */
 .tags{display:flex;flex-wrap:wrap;gap:5px}
 .tag{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid #D3D1C7;color:#5F5E5A;background:transparent;cursor:pointer;user-select:none;transition:all .12s}
 .tag:hover{border-color:#888780;color:#2C2C2A}
@@ -91,8 +92,11 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
 .grp-name{font-size:12px;font-weight:600;color:#2C2C2A}
 .grp-cnt{font-size:10px;background:#F1EFE8;border-radius:8px;padding:1px 6px;color:#888780}
 .neu-badge{font-size:9px;padding:1px 6px;border-radius:8px;background:#FAEEDA;color:#633806;border:1px solid #FAC775}
+.grp-toggle{margin-left:auto;font-size:10px;padding:2px 8px;border-radius:8px;border:1px solid #D3D1C7;background:#fff;color:#888780;cursor:pointer;font-family:inherit}
+.grp-toggle:hover{border-color:#1D9E75;color:#1D9E75}
 .tag-sb{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;padding:10px 12px;margin-top:8px}
 .tag-out{margin-top:7px;padding-top:7px;border-top:1px solid #E0DED8;font-size:11px;color:#888780;font-family:monospace;word-break:break-all;line-height:1.7}
+/* Media styles */
 .media-block{background:#fff;border:1px solid #E0DED8;border-radius:12px;margin-bottom:10px;overflow:hidden}
 .media-header{padding:10px 14px;background:#F8F7F3;border-bottom:1px solid #E0DED8;display:flex;align-items:center;gap:8px}
 .media-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
@@ -102,11 +106,23 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
 .media-text{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;padding:10px 12px;font-size:12px;color:#2C2C2A;line-height:1.7;white-space:pre-wrap;min-height:60px}
 .media-hint{margin-top:6px;font-size:11px;color:#888780;font-style:italic}
 .media-copy{margin-top:8px;text-align:right}
+/* Loading */
 .loading{display:flex;align-items:center;gap:9px;color:#888780;font-size:12px}
 .spinner{width:16px;height:16px;border:2px solid #E0DED8;border-top-color:#1D9E75;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 .info-box{background:#E6F1FB;border:1px solid #B5D4F4;border-radius:8px;padding:9px 12px;font-size:12px;color:#0C447C;margin-bottom:10px;line-height:1.6}
 .err-box{background:#FCEBEB;border:1px solid #F7C1C1;border-radius:8px;padding:9px 12px;font-size:12px;color:#A32D2D;margin-bottom:8px}
+/* Text annotation */
+.annot-text-box{background:#F8F7F3;border:2px solid #E0DED8;border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.8;white-space:pre-wrap;word-break:break-word}
+.annot{position:relative;border-radius:3px;padding:1px 2px;cursor:help}
+.annot-warn{background:#FFF3CD;border-bottom:2px solid #FAC775}
+.annot-err{background:#FCEBEB;border-bottom:2px solid #E55353}
+.annot-ok{background:#E1F5EE;border-bottom:2px solid #1D9E75}
+.annot .tip{display:none;position:absolute;bottom:calc(100% + 4px);left:0;z-index:200;background:#2C2C2A;color:#fff;font-size:11px;padding:7px 10px;border-radius:6px;min-width:180px;max-width:300px;line-height:1.5;white-space:normal;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.annot:hover .tip{display:block}
+.annot-legend{display:flex;gap:12px;font-size:11px;color:#888780;margin-top:8px;flex-wrap:wrap}
+.annot-legend span{display:flex;align-items:center;gap:4px}
+.annot-legend i{width:12px;height:12px;border-radius:2px;display:inline-block}
 </style>
 </head>
 <body>
@@ -126,7 +142,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
 <div class="wrap" id="main-app" style="display:none">
   <div class="logo-row"><div class="dot"></div><span class="logo-text">AVV Hoher List &middot; &Ouml;ffentlichkeitsarbeit</span></div>
   <h1>Redaktionsassistent</h1>
-  <div class="tagline">Sprachstil &middot; Menschlichkeit &middot; Tags &middot; Medienformate &mdash; Wizard v2.0</div>
+  <div class="tagline">Sprachstil &middot; Menschlichkeit &middot; Tags &middot; Ausgabe &mdash; Wizard v2.1</div>
 
   <div class="api-bar">
     <span style="flex-shrink:0;font-weight:500">API-Key:</span>
@@ -138,7 +154,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
     <button class="step-btn active" id="step-btn-1" onclick="goStep(1)"><span class="step-num">01</span><span class="step-name">Eingabe</span></button>
     <button class="step-btn locked" id="step-btn-2"><span class="step-num">02</span><span class="step-name">Sprache &amp; Stil</span></button>
     <button class="step-btn locked" id="step-btn-3"><span class="step-num">03</span><span class="step-name">Tags</span></button>
-    <button class="step-btn locked" id="step-btn-4"><span class="step-num">04</span><span class="step-name">Medien</span></button>
+    <button class="step-btn locked" id="step-btn-4"><span class="step-num">04</span><span class="step-name">Ausgabe</span></button>
   </div>
 
   <!-- PANEL 1: Eingabe & Optionen -->
@@ -188,21 +204,9 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
       </div>
       <div class="sublbl" id="mode-hint">Der bestehende Text wird analysiert und verbessert. Die Stimme des Autors bleibt erhalten.</div>
     </div>
-    <div class="card">
-      <span class="lbl">Ausgabeformate</span>
-      <div class="sublbl">Welche Formate sollen zus&auml;tzlich erzeugt werden? Im Standard alle inaktiv.</div>
-      <div class="checkbox-grid">
-        <label class="cb-item" id="cb-website"><input type="checkbox" id="chk-website" onchange="updateCb('website')"> Website-Beitrag</label>
-        <label class="cb-item" id="cb-instagram"><input type="checkbox" id="chk-instagram" onchange="updateCb('instagram')"> Instagram</label>
-        <label class="cb-item" id="cb-facebook"><input type="checkbox" id="chk-facebook" onchange="updateCb('facebook')"> Facebook</label>
-        <label class="cb-item" id="cb-bluesky"><input type="checkbox" id="chk-bluesky" onchange="updateCb('bluesky')"> Bluesky</label>
-        <label class="cb-item" id="cb-mastodon"><input type="checkbox" id="chk-mastodon" onchange="updateCb('mastodon')"> Mastodon</label>
-        <label class="cb-item" id="cb-presse"><input type="checkbox" id="chk-presse" onchange="updateCb('presse')"> Pressemitteilung</label>
-      </div>
-    </div>
     <div id="err-1" style="display:none" class="err-box"></div>
     <div class="btn-row">
-      <button class="btn-primary" id="btn-1" onclick="startWizard()">Beitragscheck starten &rarr;</button>
+      <button class="btn-primary" id="btn-1" onclick="startWizard()">Analyse starten &rarr;</button>
     </div>
   </div>
 
@@ -215,6 +219,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
     <div id="err-2" style="display:none;margin-top:8px" class="err-box"></div>
   </div>
   <div id="result-2" style="display:none">
+    <!-- Sprachstil-Ergebnisse -->
     <div class="result-card">
       <div class="r-section">
         <div class="r-title">Gesamtbewertung <span class="badge" id="badge-gesamt"></span></div>
@@ -245,6 +250,21 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
         </div>
       </div>
     </div>
+    <!-- Annotierter Text -->
+    <div class="result-card" id="annot-card" style="display:none">
+      <div class="r-title" style="margin-bottom:8px">Textansicht mit Markierungen</div>
+      <div id="annot-box"></div>
+      <div class="annot-legend">
+        <span><i style="background:#FFF3CD;border:1px solid #FAC775"></i> Hinweis</span>
+        <span><i style="background:#FCEBEB;border:1px solid #E55353"></i> Kritisch</span>
+        <span><i style="background:#E1F5EE;border:1px solid #1D9E75"></i> i.&thinsp;O.</span>
+        <span style="color:#C8C6C0;font-size:10px">Mouseover = Tipp</span>
+      </div>
+      <div class="btn-row" style="margin-top:10px">
+        <button class="btn-primary" id="btn-apply-vsl" style="display:none" onclick="applyVorschlag()">&#10003; Verbesserter Text &uuml;bernehmen</button>
+      </div>
+    </div>
+    <!-- KI-Muster -->
     <div class="result-card" style="margin-top:10px">
       <div class="r-section">
         <div class="r-title">KI-Muster-Check <span class="badge" id="badge-muster"></span></div>
@@ -281,18 +301,29 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
       </div>
     </div>
     <div class="btn-row">
-      <button class="btn-primary" id="btn-to-media" onclick="goStep(4)" style="display:none">Weiter: Medienformate &rarr;</button>
-      <button class="btn-primary" id="btn-finish" onclick="resetAll()" style="display:none">Neuer Beitrag</button>
+      <button class="btn-primary" onclick="goStep(4)">Weiter: Ausgabe &rarr;</button>
       <button class="btn-sec" onclick="resetAll()">Von vorne</button>
     </div>
   </div>
 
-  <!-- PANEL 4: Medienformate -->
+  <!-- PANEL 4: Ausgabe -->
   <div id="panel-4" style="display:none">
-    <div class="info-box" id="media-info">Texte werden f&uuml;r die ausgew&auml;hlten Medienformate generiert.</div>
+    <div class="card">
+      <span class="lbl">Ausgabeformate</span>
+      <div class="sublbl">Welche Formate sollen zus&auml;tzlich erzeugt werden? Im Standard alle inaktiv.</div>
+      <div class="checkbox-grid">
+        <label class="cb-item" id="cb-website"><input type="checkbox" id="chk-website" onchange="updateCb('website')"> Website-Beitrag</label>
+        <label class="cb-item" id="cb-instagram"><input type="checkbox" id="chk-instagram" onchange="updateCb('instagram')"> Instagram</label>
+        <label class="cb-item" id="cb-facebook"><input type="checkbox" id="chk-facebook" onchange="updateCb('facebook')"> Facebook</label>
+        <label class="cb-item" id="cb-bluesky"><input type="checkbox" id="chk-bluesky" onchange="updateCb('bluesky')"> Bluesky</label>
+        <label class="cb-item" id="cb-mastodon"><input type="checkbox" id="chk-mastodon" onchange="updateCb('mastodon')"> Mastodon</label>
+        <label class="cb-item" id="cb-presse"><input type="checkbox" id="chk-presse" onchange="updateCb('presse')"> Pressemitteilung</label>
+      </div>
+    </div>
+    <div class="info-box" id="media-info" style="display:none">Texte werden f&uuml;r die ausgew&auml;hlten Formate generiert.</div>
     <div class="btn-row">
-      <button class="btn-primary" id="btn-4" onclick="runStep4()">Medientexte generieren &rarr;</button>
-      <span id="loading-4" style="display:none" class="loading"><div class="spinner"></div>Generiere Medienformate&hellip;</span>
+      <button class="btn-primary" id="btn-4" onclick="runStep4()">Ausgabe generieren &rarr;</button>
+      <span id="loading-4" style="display:none" class="loading"><div class="spinner"></div>Generiere Ausgabe&hellip;</span>
     </div>
     <div id="err-4" style="display:none;margin-top:8px" class="err-box"></div>
   </div>
@@ -324,9 +355,6 @@ async function unlock() {
 }
 function saveKey(v) { localStorage.setItem('avv_apikey', v); }
 
-// ── GitHub Raw — Trainingsdaten live aus dem Repository ────────────────────────
-// Struktur: MrDino83/AVV → KI-Redaktionshelfer/trainingsdateien/
-// Aenderungen an .md-Dateien in GitHub wirken sofort im Tool (kein Reload noetig)
 const GH = 'https://raw.githubusercontent.com/MrDino83/AVV/main/KI-Redaktionshelfer/trainingsdateien/';
 const FILES = {
   sprachstil: 'AVV_Beitragscheck_Sprachstil.md',
@@ -371,6 +399,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 let done = new Set(), cachedText = '', procMode = 'ueberarbeiten';
 let tagSel = new Set(), selMedia = new Set();
+let cachedVerbesserterText = '';
 
 function updateMeta() {
   const t = document.getElementById('txt').value;
@@ -416,6 +445,22 @@ function showVsl(pre, t) {
   else box.style.display = 'none';
 }
 
+// Robuster JSON-Parser: escaped Steuerzeichen in Strings Zeichen fuer Zeichen
+function sanitizeJSON(s) {
+  let inStr = false, esc = false, out = '';
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (esc) { out += c; esc = false; continue; }
+    if (c === '\\' && inStr) { out += c; esc = true; continue; }
+    if (c === '"') { inStr = !inStr; out += c; continue; }
+    if (inStr && c === '\n') { out += '\\n'; continue; }
+    if (inStr && c === '\r') { out += '\\r'; continue; }
+    if (inStr && c === '\t') { out += '\\t'; continue; }
+    out += c;
+  }
+  return out;
+}
+
 async function api(sys, usr, max = 1500) {
   const key = document.getElementById('apikey').value.trim();
   if (!key) throw new Error('Bitte API-Key eingeben.');
@@ -428,6 +473,7 @@ async function api(sys, usr, max = 1500) {
   if (d.error) throw new Error(d.error.message);
   let raw = (d.content?.find(b => b.type === 'text')?.text || '').trim();
   raw = raw.replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/\s*```$/, '').trim();
+  // JSON-Objekt/-Array exakt extrahieren
   const start = raw.search(/[{[]/);
   if (start !== -1) {
     const opener = raw[start], closer = opener === '{' ? '}' : ']';
@@ -438,12 +484,7 @@ async function api(sys, usr, max = 1500) {
     }
     if (end !== -1) raw = raw.slice(start, end + 1);
   }
-  try { return JSON.parse(raw); } catch(e) {
-    const fixed = raw.replace(/"(?:[^"\\]|\\.)*"/g, m =>
-      m.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t')
-    );
-    return JSON.parse(fixed);
-  }
+  return JSON.parse(sanitizeJSON(raw));
 }
 
 function startWizard() {
@@ -453,28 +494,36 @@ function startWizard() {
   cachedText = txt; done.clear(); done.add(1); goStep(2);
 }
 
+// ── Schritt 2: Sprachstil + Menschlichkeit ────────────────────────────────────
 async function runStep2() {
   document.getElementById('err-2').style.display = 'none';
   document.getElementById('btn-2').style.display = 'none';
   document.getElementById('loading-2').style.display = 'flex';
   const cat = document.getElementById('cat').value, modus = document.getElementById('modus').value;
+
   const sysSprachstil = `Du bist Redaktionsassistent der AVV.
 Schreibmodus: ${modus}. Modus: ${procMode === 'generieren' ? 'Neu generieren' : 'Ueberarbeiten'}. Kategorie: ${cat || 'nicht angegeben'}.
-SPRACHSTIL-GUIDE:\n${T.sprachstil || '(nicht geladen)'}
-MENSCHLICHKEITS-REGELN (beim Formulieren von Vorschlaegen aktiv anwenden):\n${T.menschlich || '(nicht geladen)'}
-Pruefe den Text. Gib fuer jede Rubrik Bewertung + konkreten Verbesserungsvorschlag direkt darunter.
-JSON ohne Backticks:
-{"gesamt":"ok|warn|fehler","gesamt_text":"","ton":"ok|warn|fehler","ton_text":"","ton_vorschlag":"","satzbau":"ok|warn|fehler","satzbau_text":"","satzbau_vorschlag":"","laenge":"ok|warn|fehler","laenge_text":"","laenge_vorschlag":""}`;
+SPRACHSTIL-GUIDE:
+${T.sprachstil || '(nicht geladen)'}
+MENSCHLICHKEITS-REGELN:
+${T.menschlich || '(nicht geladen)'}
+Pruefe den Text. Markiere konkrete problematische Textstellen als fundstellen.
+Erstelle ausserdem einen vollstaendig verbesserten Text als verbesserter_text.
+Antworte NUR mit gueltigem JSON, keine Erklaerungen davor oder danach:
+{"gesamt":"ok|warn|fehler","gesamt_text":"","ton":"ok|warn|fehler","ton_text":"","ton_vorschlag":"","satzbau":"ok|warn|fehler","satzbau_text":"","satzbau_vorschlag":"","laenge":"ok|warn|fehler","laenge_text":"","laenge_vorschlag":"","fundstellen":[{"phrase":"exakter Satz oder Satzteil aus dem Text","typ":"warn|fehler","tipp":"konkreter Verbesserungshinweis"}],"verbesserter_text":"vollstaendig ueberarbeiteter Text"}`;
+
   const sysMenschlich = `Du bist Redaktionsassistent der AVV. Schreibmodus: ${modus}.
-MENSCHLICHKEITS-GUIDE (nicht nur pruefen — beim Schreiben aller Vorschlaege aktiv anwenden):
+MENSCHLICHKEITS-GUIDE:
 ${T.menschlich || '(nicht geladen)'}
 Muster 5+6 nur bei persoenlich/emotional pruefen. Alle 12 Muster zurueckgeben.
-JSON ohne Backticks:
-{"anzahl_gefunden":0,"zusammenfassung":"","muster":[{"nr":1,"name":"...","gefunden":false,"hinweis":"","vorschlag":""}]}`;
+Antworte NUR mit gueltigem JSON:
+{"anzahl_gefunden":0,"zusammenfassung":"","muster":[{"nr":1,"name":"","gefunden":false,"hinweis":"","vorschlag":""}]}`;
+
   const [r1, r2] = await Promise.allSettled([
-    api(sysSprachstil, (cat ? 'Kategorie: ' + cat + '\n' : '') + 'Beitragstext:\n' + cachedText),
+    api(sysSprachstil, (cat ? 'Kategorie: ' + cat + '\n' : '') + 'Beitragstext:\n' + cachedText, 2500),
     api(sysMenschlich, 'Schreibmodus: ' + modus + '\n\nBeitragstext:\n' + cachedText, 2000)
   ]);
+
   const errors = [];
   if (r1.status === 'fulfilled') {
     const p = r1.value;
@@ -482,7 +531,17 @@ JSON ohne Backticks:
     setBadge('badge-ton', p.ton); setHTML('text-ton', p.ton_text); showVsl('ton', p.ton_vorschlag);
     setBadge('badge-satzbau', p.satzbau); setHTML('text-satzbau', p.satzbau_text); showVsl('satzbau', p.satzbau_vorschlag);
     setBadge('badge-laenge', p.laenge); setHTML('text-laenge', p.laenge_text); showVsl('laenge', p.laenge_vorschlag);
+    // Annotierter Text
+    if (p.fundstellen || p.verbesserter_text) {
+      renderAnnotatedText(cachedText, p.fundstellen || [], p.gesamt || 'warn');
+      if (p.verbesserter_text) {
+        cachedVerbesserterText = p.verbesserter_text;
+        document.getElementById('btn-apply-vsl').style.display = 'inline-flex';
+      }
+      document.getElementById('annot-card').style.display = 'block';
+    }
   } else { errors.push('Sprachstil: ' + r1.reason.message); }
+
   if (r2.status === 'fulfilled') {
     const p = r2.value;
     const anz = p.anzahl_gefunden || 0;
@@ -498,6 +557,7 @@ JSON ohne Backticks:
       list.appendChild(div);
     });
   } else { errors.push('Menschlichkeit: ' + r2.reason.message); }
+
   if (errors.length) { const el = document.getElementById('err-2'); el.textContent = '\u26a0 ' + errors.join(' | '); el.style.display = 'block'; }
   if (r1.status === 'fulfilled' || r2.status === 'fulfilled') {
     done.add(2); document.getElementById('step-btn-2').className = 'step-btn done';
@@ -507,6 +567,48 @@ JSON ohne Backticks:
   document.getElementById('btn-2').style.display = 'inline-flex'; document.getElementById('loading-2').style.display = 'none';
 }
 
+// Annotierter Text rendern
+function escH(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function renderAnnotatedText(text, fundstellen, gesamt) {
+  const borderColor = gesamt === 'fehler' ? '#E55353' : gesamt === 'warn' ? '#FAC775' : '#1D9E75';
+  const fs = [...fundstellen].filter(f => f && f.phrase).sort((a,b) => b.phrase.length - a.phrase.length);
+  // Segmente bilden
+  let segs = [{text, typ:'neutral', tipp:''}];
+  fs.forEach(f => {
+    const next = [];
+    segs.forEach(seg => {
+      if (seg.typ !== 'neutral') { next.push(seg); return; }
+      const idx = seg.text.indexOf(f.phrase);
+      if (idx === -1) { next.push(seg); return; }
+      if (idx > 0) next.push({text: seg.text.slice(0, idx), typ:'neutral', tipp:''});
+      next.push({text: f.phrase, typ: f.typ || 'warn', tipp: f.tipp || ''});
+      const rest = seg.text.slice(idx + f.phrase.length);
+      if (rest) next.push({text: rest, typ:'neutral', tipp:''});
+    });
+    segs = next;
+  });
+  const html = segs.map(seg => {
+    const t = escH(seg.text).replace(/\n/g, '<br>');
+    if (seg.typ === 'neutral') return t;
+    const cls = seg.typ === 'fehler' ? 'annot-err' : 'annot-warn';
+    return `<span class="annot ${cls}"><span class="tip">${escH(seg.tipp)}</span>${t}</span>`;
+  }).join('');
+  document.getElementById('annot-box').innerHTML =
+    `<div class="annot-text-box" style="border-color:${borderColor}">${html}</div>`;
+}
+
+function applyVorschlag() {
+  if (!cachedVerbesserterText) return;
+  document.getElementById('txt').value = cachedVerbesserterText;
+  updateMeta();
+  cachedText = cachedVerbesserterText;
+  // Schritte 2-4 zuruecksetzen damit neu analysiert werden kann
+  done.delete(2); done.delete(3); done.delete(4);
+  cachedVerbesserterText = '';
+  goStep(1);
+}
+
+// ── Schritt 3: Tags ────────────────────────────────────────────────────────────
 const TAG_GRP = [
   {k:'Katalog_Messier',l:'Katalog \u2013 Messier'},{k:'Katalog_NGC_IC',l:'Katalog \u2013 NGC\u00a0/\u00a0IC'},
   {k:'Objekttyp',l:'Objekttyp'},{k:'Beobachtung',l:'Beobachtung\u00a0&\u00a0Methodik'},
@@ -520,8 +622,9 @@ async function runStep3() {
   document.getElementById('loading-3').style.display = 'flex';
   const cat = document.getElementById('cat').value;
   const sys = `Du bist Verschlagwortungs-Assistent fuer hoher-list.de (AVV).
-TAG-TAXONOMIE:\n${T.tags || '(nicht geladen)'}
-JSON ohne Backticks:
+TAG-TAXONOMIE:
+${T.tags || '(nicht geladen)'}
+Antworte NUR mit gueltigem JSON:
 {"reasoning":"","tags":{"Katalog_Messier":[],"Katalog_NGC_IC":[],"Objekttyp":[],"Beobachtung":[],"Ausruestung":[],"Wissen":[],"Verein_Ort":[],"Zielgruppe":[],"Personen":[],"Neu":[]}}`;
   try {
     const p = await api(sys, (cat ? 'Kategorie: ' + cat + '\n' : '') + 'Beitragstext:\n' + cachedText);
@@ -531,30 +634,47 @@ JSON ohne Backticks:
     TAG_GRP.forEach(grp => {
       const tags = p.tags?.[grp.k] || []; if (!tags.length) return;
       const div = document.createElement('div'); div.className = 'grp';
-      div.innerHTML = `<div class="grp-hd"><span class="grp-name">${grp.l}</span><span class="grp-cnt">${tags.length}</span>${grp.neu ? '<span class="neu-badge">Neu</span>' : ''}</div><div class="tags" id="tg_${grp.k}"></div>`;
+      div.innerHTML = `<div class="grp-hd">
+        <span class="grp-name">${grp.l}</span>
+        <span class="grp-cnt">${tags.length}</span>
+        ${grp.neu ? '<span class="neu-badge">Neu</span>' : ''}
+        <button class="grp-toggle" id="grp-tog-${grp.k}" onclick="toggleGrp('${grp.k}')">alle aus</button>
+      </div><div class="tags" id="tg_${grp.k}"></div>`;
       g.appendChild(div);
       tags.forEach(t => {
         const el = document.createElement('span'); el.className = 'tag' + (tagSel.has(t) ? ' on' : '');
-        el.textContent = t + (tagSel.has(t) ? ' \u00d7' : ' +'); el.onclick = () => togTag(t, el);
+        el.textContent = t + (tagSel.has(t) ? ' \u00d7' : ' +'); el.onclick = () => togTag(t, el, grp.k);
         div.querySelector('#tg_' + grp.k).appendChild(el);
       });
     });
     updTagSel(); done.add(3); document.getElementById('step-btn-3').className = 'step-btn done';
-    if (selMedia.size > 0) {
-      const s4 = document.getElementById('step-btn-4'); s4.className = 'step-btn'; s4.onclick = () => goStep(4);
-      document.getElementById('btn-to-media').style.display = 'inline-flex';
-      document.getElementById('btn-finish').style.display = 'none';
-    } else {
-      document.getElementById('btn-to-media').style.display = 'none';
-      document.getElementById('btn-finish').style.display = 'inline-flex';
-    }
+    const s4 = document.getElementById('step-btn-4'); s4.className = 'step-btn'; s4.onclick = () => goStep(4);
     document.getElementById('panel-3').style.display = 'none'; document.getElementById('result-3').style.display = 'block';
   } catch(e) { const el = document.getElementById('err-3'); el.textContent = '\u26a0 ' + e.message; el.style.display = 'block'; }
   document.getElementById('btn-3').style.display = 'inline-flex'; document.getElementById('loading-3').style.display = 'none';
 }
-function togTag(t, el) {
+function toggleGrp(k) {
+  const btn = document.getElementById('grp-tog-' + k);
+  const tagEls = document.querySelectorAll('#tg_' + k + ' .tag');
+  const allOn = [...tagEls].every(el => el.classList.contains('on'));
+  tagEls.forEach(el => {
+    const t = el.textContent.replace(/ [\+\u00d7]$/, '');
+    if (allOn) { tagSel.delete(t); el.className = 'tag'; el.textContent = t + ' +'; }
+    else       { tagSel.add(t);    el.className = 'tag on'; el.textContent = t + ' \u00d7'; }
+  });
+  btn.textContent = allOn ? 'alle an' : 'alle aus';
+  updTagSel();
+}
+function togTag(t, el, grp) {
   if (tagSel.has(t)) { tagSel.delete(t); el.className = 'tag'; el.textContent = t + ' +'; }
   else               { tagSel.add(t); el.className = 'tag on'; el.textContent = t + ' \u00d7'; }
+  // Gruppenbutton-Label aktualisieren
+  if (grp) {
+    const tagEls = document.querySelectorAll('#tg_' + grp + ' .tag');
+    const allOn = [...tagEls].every(el2 => el2.classList.contains('on'));
+    const btn = document.getElementById('grp-tog-' + grp);
+    if (btn) btn.textContent = allOn ? 'alle aus' : 'alle an';
+  }
   updTagSel();
 }
 function updTagSel() {
@@ -577,6 +697,7 @@ function copyTags() {
   setTimeout(() => { b.textContent = 'Tags kopieren'; b.classList.remove('copied'); }, 1500);
 }
 
+// ── Schritt 4: Ausgabe ─────────────────────────────────────────────────────────
 const MEDIA_CFG = {
   website:  { label: 'Website-Beitrag',  color: '#1D9E75', tkey: null },
   instagram:{ label: 'Instagram',        color: '#E1306C', tkey: 'instagram' },
@@ -587,8 +708,12 @@ const MEDIA_CFG = {
 };
 async function runStep4() {
   const mList = [...selMedia].filter(m => MEDIA_CFG[m]);
-  if (!mList.length) { done.add(4); document.getElementById('panel-4').style.display = 'none'; document.getElementById('result-4').style.display = 'block'; return; }
-  document.getElementById('media-info').textContent = 'Generiere f\u00fcr: ' + mList.map(m => MEDIA_CFG[m].label).join(', ');
+  if (!mList.length) {
+    done.add(4); document.getElementById('panel-4').style.display = 'none'; document.getElementById('result-4').style.display = 'block'; return;
+  }
+  const mi = document.getElementById('media-info');
+  mi.textContent = 'Generiere f\u00fcr: ' + mList.map(m => MEDIA_CFG[m].label).join(', ');
+  mi.style.display = 'block';
   document.getElementById('err-4').style.display = 'none';
   document.getElementById('btn-4').style.display = 'none';
   document.getElementById('loading-4').style.display = 'flex';
@@ -598,13 +723,15 @@ async function runStep4() {
     const cfg = MEDIA_CFG[mk];
     const pg = cfg.tkey ? (T[cfg.tkey] || '') : '';
     const sys = `Du bist Texter der AVV. Format: ${cfg.label}. Schreibmodus: ${modus}. Kategorie: ${cat || 'n/a'}. Modus: ${procMode === 'generieren' ? 'Neu' : 'Adaptieren'}.
-SPRACHSTIL:\n${T.sprachstil || ''}
-MENSCHLICHKEITS-REGELN (aktiv beim Schreiben anwenden):\n${T.menschlich || ''}
-${pg ? '\nPLATTFORM-GUIDE fuer ' + cfg.label + ':\n' + pg : ''}
-Erstelle optimalen Text fuer ${cfg.label}. Authentisch, nicht KI-generiert wirkend.
-JSON ohne Backticks: {"text":"Text mit \\n fuer Zeilenumbrueche","hinweis":"1 kurzer Hinweis"}`;
+SPRACHSTIL:
+${T.sprachstil || ''}
+MENSCHLICHKEITS-REGELN:
+${T.menschlich || ''}
+${pg ? 'PLATTFORM-GUIDE fuer ' + cfg.label + ':\n' + pg : ''}
+Erstelle optimalen Text. Authentisch, nicht KI-generiert wirkend.
+Antworte NUR mit gueltigem JSON: {"text":"Text hier mit \\n fuer Umbrueche","hinweis":"kurzer Hinweis"}`;
     try {
-      const p = await api(sys, 'Beitragstext:\n' + cachedText, 1000);
+      const p = await api(sys, 'Beitragstext:\n' + cachedText, 1200);
       addMedia(res, cfg, mk, p.text || '', p.hinweis || '');
     } catch(e) { addMedia(res, cfg, mk, 'Fehler: ' + e.message, ''); }
   }));
@@ -615,7 +742,7 @@ JSON ohne Backticks: {"text":"Text mit \\n fuer Zeilenumbrueche","hinweis":"1 ku
 function addMedia(container, cfg, key, text, hint) {
   const div = document.createElement('div'); div.className = 'media-block';
   div.innerHTML = `<div class="media-header"><div class="media-icon" style="background:${cfg.color}">&#128196;</div><div class="media-title">${cfg.label}</div><div class="media-meta">${text.replace(/\n/g,' ').length} Zeichen</div></div>`
-    + `<div class="media-body"><div class="media-text" id="mt-${key}">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>${hint ? `<div class="media-hint">${hint}</div>` : ''}<div class="media-copy"><button class="btn-sec" id="cp-${key}" onclick="cpMedia('${key}')">Kopieren</button></div></div>`;
+    + `<div class="media-body"><div class="media-text" id="mt-${key}">${escH(text)}</div>${hint ? `<div class="media-hint">${escH(hint)}</div>` : ''}<div class="media-copy"><button class="btn-sec" id="cp-${key}" onclick="cpMedia('${key}')">Kopieren</button></div></div>`;
   container.appendChild(div);
 }
 function cpMedia(key) {
@@ -626,12 +753,14 @@ function cpMedia(key) {
 }
 
 function resetAll() {
-  done = new Set(); cachedText = ''; tagSel = new Set(); selMedia = new Set();
+  done = new Set(); cachedText = ''; tagSel = new Set(); selMedia = new Set(); cachedVerbesserterText = '';
   document.getElementById('txt').value = ''; document.getElementById('cat').value = ''; document.getElementById('modus').value = 'sachlich';
   setMode('ueberarbeiten');
   ['website','instagram','facebook','bluesky','mastodon','presse'].forEach(k => {
     document.getElementById('chk-' + k).checked = false; document.getElementById('cb-' + k).classList.remove('active');
   });
+  document.getElementById('annot-card').style.display = 'none';
+  document.getElementById('media-info').style.display = 'none';
   [1,2,3,4].forEach(i => {
     const p = document.getElementById('panel-' + i); if (p) p.style.display = i === 1 ? 'block' : 'none';
     const r = document.getElementById('result-' + i); if (r) r.style.display = 'none';
