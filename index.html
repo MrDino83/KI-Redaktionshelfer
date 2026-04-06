@@ -452,7 +452,7 @@ function startWizard() {
   const txt = document.getElementById('txt').value.trim();
   if (!txt) { const e = document.getElementById('err-1'); e.textContent = 'Bitte Beitragstext eingeben.'; e.style.display = 'block'; return; }
   document.getElementById('err-1').style.display = 'none';
-  cachedText = txt; done.clear(); goStep(2);
+  cachedText = txt; done.clear(); done.add(1); goStep(2);
 }
 
 async function runStep2() {
