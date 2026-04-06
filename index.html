@@ -113,13 +113,18 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
 .info-box{background:#E6F1FB;border:1px solid #B5D4F4;border-radius:8px;padding:9px 12px;font-size:12px;color:#0C447C;margin-bottom:10px;line-height:1.6}
 .err-box{background:#FCEBEB;border:1px solid #F7C1C1;border-radius:8px;padding:9px 12px;font-size:12px;color:#A32D2D;margin-bottom:8px}
 /* Text annotation */
-.annot-text-box{background:#F8F7F3;border:2px solid #E0DED8;border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.8;white-space:pre-wrap;word-break:break-word}
-.annot{position:relative;border-radius:3px;padding:1px 2px;cursor:help}
+.annot-text-box{background:#F8F7F3;border:2px solid #E0DED8;border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.8;white-space:pre-wrap;word-break:break-word;outline:none;min-height:80px}
+.annot-text-box:focus{border-color:#1D9E75}
+.annot{position:relative;border-radius:3px;padding:1px 2px}
 .annot-warn{background:#FFF3CD;border-bottom:2px solid #FAC775}
 .annot-err{background:#FCEBEB;border-bottom:2px solid #E55353}
 .annot-ok{background:#E1F5EE;border-bottom:2px solid #1D9E75}
-.annot .tip{display:none;position:absolute;bottom:calc(100% + 4px);left:0;z-index:200;background:#2C2C2A;color:#fff;font-size:11px;padding:7px 10px;border-radius:6px;min-width:180px;max-width:300px;line-height:1.5;white-space:normal;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.2)}
-.annot:hover .tip{display:block}
+/* Tooltip popup */
+.annot .tip{display:none;position:absolute;bottom:calc(100% + 6px);left:0;z-index:300;background:#2C2C2A;color:#fff;font-size:11px;padding:8px 10px;border-radius:7px;min-width:200px;max-width:320px;line-height:1.5;white-space:normal;pointer-events:auto;box-shadow:0 4px 16px rgba(0,0,0,.25);cursor:default}
+.annot:hover .tip,.annot .tip:hover{display:block}
+.tip-text{margin-bottom:6px}
+.tip-btn{display:inline-block;margin-top:4px;padding:3px 9px;background:#1D9E75;color:#fff;border:none;border-radius:5px;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit}
+.tip-btn:hover{background:#169E6A}
 .annot-legend{display:flex;gap:12px;font-size:11px;color:#888780;margin-top:8px;flex-wrap:wrap}
 .annot-legend span{display:flex;align-items:center;gap:4px}
 .annot-legend i{width:12px;height:12px;border-radius:2px;display:inline-block}
@@ -222,15 +227,16 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
     <!-- Annotierter Text (primär) -->
     <div class="result-card" id="annot-card">
       <div class="r-title" style="margin-bottom:8px">Textanalyse <span class="badge" id="badge-gesamt"></span></div>
-      <div id="annot-box" class="annot-text-box"></div>
+      <div id="annot-box" class="annot-text-box" contenteditable="true" spellcheck="true" oninput="syncAnnotText()"></div>
       <div class="annot-legend">
         <span><i style="background:#E1F5EE;border:1px solid #1D9E75"></i> Gut</span>
-        <span><i style="background:#FFF3CD;border:1px solid #FAC775"></i> Hinweis / Verbesserung</span>
+        <span><i style="background:#FFF3CD;border:1px solid #FAC775"></i> Hinweis</span>
         <span><i style="background:#FCEBEB;border:1px solid #E55353"></i> Kritisch</span>
-        <span style="color:#C8C6C0;font-size:10px">&nbsp;&#8212;&nbsp;Mouseover = Details</span>
+        <span style="color:#C8C6C0;font-size:10px">&nbsp;&#8212;&nbsp;Mouseover = Tipp &amp; &Uuml;bernehmen</span>
       </div>
       <div class="btn-row" style="margin-top:10px">
-        <button class="btn-primary" id="btn-apply-vsl" style="display:none" onclick="applyVorschlag()">&#10003; Verbesserten Text &uuml;bernehmen</button>
+        <button class="btn-primary" id="btn-apply-vsl" style="display:none" onclick="applyVorschlag()">&#10003; Alle Verbesserungen &uuml;bernehmen</button>
+        <button class="btn-sec" onclick="syncAnnotToInput()">Text in Eingabe &uuml;bernehmen</button>
       </div>
     </div>
     <!-- Sprachstil-Details -->
@@ -255,9 +261,8 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
         <div class="r-text" id="text-muster-summary"></div>
       </div>
     </div>
-    <div id="auto-advance-2" class="info-box" style="display:none;margin-top:8px"></div>
     <div class="btn-row">
-      <button class="btn-primary" onclick="goStep(3);runStep3()">Weiter: Tags &rarr;</button>
+      <button class="btn-primary" onclick="goStep(3)">Weiter: Tags &rarr;</button>
       <button class="btn-sec" onclick="resetAll()">Von vorne</button>
     </div>
   </div>
@@ -269,7 +274,6 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
       <span id="loading-3" style="display:none" class="loading"><div class="spinner"></div>Tags werden analysiert&hellip;</span>
     </div>
     <div id="err-3" style="display:none;margin-top:8px" class="err-box"></div>
-    <div id="auto-advance-3" class="info-box" style="display:none;margin-top:8px"></div>
   </div>
   <div id="result-3" style="display:none">
     <div class="result-card">
@@ -285,7 +289,6 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
         <button class="btn-sec" id="cpbtn-tags" onclick="copyTags()">Tags kopieren</button>
       </div>
     </div>
-    <div id="auto-advance-3-done" class="info-box" style="display:none;margin-top:8px"></div>
     <div class="btn-row">
       <button class="btn-primary" onclick="goStep(4)">Weiter: Ausgabe &rarr;</button>
       <button class="btn-sec" onclick="resetAll()">Von vorne</button>
@@ -500,7 +503,7 @@ Fuer "fundstellen": Kopiere WORTWOERTLICH Saetze oder Satzteile aus dem Eingabet
 Mindestens 2-3 ok-Fundstellen, wenn Text gut ist.
 Erstelle auch einen vollstaendig verbesserten Text.
 Antworte NUR mit reinem JSON ohne Erklaerung:
-{"gesamt":"ok|warn|fehler","ton":"ok|warn|fehler","ton_text":"","ton_vorschlag":"","satzbau":"ok|warn|fehler","satzbau_text":"","satzbau_vorschlag":"","laenge":"ok|warn|fehler","laenge_text":"","laenge_vorschlag":"","fundstellen":[{"phrase":"EXAKTER Auszug aus dem Text","typ":"ok|warn|fehler","tipp":"Hinweis"}],"verbesserter_text":"vollstaendig ueberarbeiteter Text"}`;
+{"gesamt":"ok|warn|fehler","ton":"ok|warn|fehler","ton_text":"","ton_vorschlag":"","satzbau":"ok|warn|fehler","satzbau_text":"","satzbau_vorschlag":"","laenge":"ok|warn|fehler","laenge_text":"","laenge_vorschlag":"","fundstellen":[{"phrase":"EXAKTER Auszug aus dem Text","typ":"ok|warn|fehler","tipp":"Erklaerung","vorschlag":"bei warn/fehler: verbesserter Ersatztext fuer genau diese Stelle, sonst leer"}],"verbesserter_text":"vollstaendig ueberarbeiteter Text"}`;
 
   const sysMenschlich = `Du bist Redaktionsassistent der AVV. Schreibmodus: ${modus}.
 MENSCHLICHKEITS-GUIDE:
@@ -555,74 +558,93 @@ Antworte NUR mit reinem JSON:
     done.add(2); document.getElementById('step-btn-2').className = 'step-btn done';
     document.getElementById('step-btn-3').className = 'step-btn'; document.getElementById('step-btn-3').onclick = () => goStep(3);
     document.getElementById('panel-2').style.display = 'none'; document.getElementById('result-2').style.display = 'block';
-    // Auto-Advance zu Schritt 3
-    autoAdvance('auto-advance-2', () => { goStep(3); runStep3(); });
   }
   document.getElementById('btn-2').style.display = 'inline-flex'; document.getElementById('loading-2').style.display = 'none';
 }
 
 // Annotierter Text rendern
 function escH(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+let annotSegments = []; // global für Übernehmen-Logik
+
 function renderAnnotatedText(text, fundstellen) {
-  // Deduplizieren, längste zuerst (verhindert nested matches)
   const seen = new Set();
   const fs = [...fundstellen]
     .filter(f => f && f.phrase && f.phrase.trim().length > 3)
     .filter(f => { const k = f.phrase.trim(); if (seen.has(k)) return false; seen.add(k); return true; })
     .sort((a,b) => b.phrase.length - a.phrase.length);
 
-  let segs = [{text, typ:'neutral', tipp:''}];
+  let segs = [{text, typ:'neutral', tipp:'', vorschlag:''}];
   fs.forEach(f => {
     const phrase = f.phrase.trim();
     const next = [];
     segs.forEach(seg => {
       if (seg.typ !== 'neutral') { next.push(seg); return; }
-      // Robuste Suche: exakt, dann case-insensitive
       let idx = seg.text.indexOf(phrase);
-      let matchedPhrase = phrase;
+      let matched = phrase;
       if (idx === -1) {
-        const lo = seg.text.toLowerCase(), ph = phrase.toLowerCase();
-        idx = lo.indexOf(ph);
-        if (idx !== -1) matchedPhrase = seg.text.slice(idx, idx + phrase.length);
+        const lo = seg.text.toLowerCase();
+        idx = lo.indexOf(phrase.toLowerCase());
+        if (idx !== -1) matched = seg.text.slice(idx, idx + phrase.length);
       }
       if (idx === -1) { next.push(seg); return; }
-      if (idx > 0) next.push({text: seg.text.slice(0, idx), typ:'neutral', tipp:''});
-      next.push({text: matchedPhrase, typ: f.typ || 'warn', tipp: f.tipp || ''});
-      const rest = seg.text.slice(idx + matchedPhrase.length);
-      if (rest) next.push({text: rest, typ:'neutral', tipp:''});
+      if (idx > 0) next.push({text: seg.text.slice(0, idx), typ:'neutral', tipp:'', vorschlag:''});
+      next.push({text: matched, typ: f.typ || 'warn', tipp: f.tipp || '', vorschlag: f.vorschlag || ''});
+      const rest = seg.text.slice(idx + matched.length);
+      if (rest) next.push({text: rest, typ:'neutral', tipp:'', vorschlag:''});
     });
     segs = next;
   });
+  annotSegments = segs;
 
-  const html = segs.map(seg => {
+  const html = segs.map((seg, i) => {
     const t = escH(seg.text).replace(/\n/g, '<br>');
     if (seg.typ === 'neutral') return t;
     const cls = seg.typ === 'fehler' ? 'annot-err' : seg.typ === 'ok' ? 'annot-ok' : 'annot-warn';
-    return `<span class="annot ${cls}"><span class="tip">${escH(seg.tipp)}</span>${t}</span>`;
+    // Übernehmen-Button nur wenn kein ok und ein Vorschlag vorhanden (oder warn/fehler)
+    const hasBtn = seg.typ !== 'ok' && seg.vorschlag;
+    const btn = hasBtn
+      ? `<button class="tip-btn" onmousedown="event.preventDefault();applySegment(${i})">&#10003; &Uuml;bernehmen</button>`
+      : '';
+    return `<span class="annot ${cls}" data-seg="${i}"><span class="tip"><span class="tip-text">${escH(seg.tipp)}</span>${btn}</span>${t}</span>`;
   }).join('');
   document.getElementById('annot-box').innerHTML = html || escH(text).replace(/\n/g,'<br>');
 }
 
-// Auto-Advance mit 4-Sekunden-Countdown
-function autoAdvance(boxId, fn) {
-  const box = document.getElementById(boxId);
-  if (!box) { fn(); return; }
-  let sec = 4;
-  box.style.display = 'block';
-  box.textContent = 'Weiter in ' + sec + ' Sekunden \u2014 oder Button dr\u00fccken.';
-  const t = setInterval(() => {
-    sec--;
-    if (sec <= 0) { clearInterval(t); box.style.display = 'none'; fn(); }
-    else box.textContent = 'Weiter in ' + sec + ' Sekunden \u2014 oder Button dr\u00fccken.';
-  }, 1000);
+// Einzelne Stelle übernehmen
+function applySegment(i) {
+  const seg = annotSegments[i];
+  if (!seg || !seg.vorschlag) return;
+  const box = document.getElementById('annot-box');
+  const span = box.querySelector('[data-seg="' + i + '"]');
+  if (span) {
+    span.outerHTML = escH(seg.vorschlag).replace(/\n/g,'<br>');
+    annotSegments[i] = {text: seg.vorschlag, typ:'neutral', tipp:'', vorschlag:''};
+  }
+  syncAnnotToInput();
 }
 
+// Sync: editierten Text aus annot-box → cachedText (ohne HTML)
+function syncAnnotText() {
+  const box = document.getElementById('annot-box');
+  cachedText = box.innerText;
+}
+
+// "Text in Eingabe übernehmen"-Button
+function syncAnnotToInput() {
+  const box = document.getElementById('annot-box');
+  const txt = box.innerText;
+  document.getElementById('txt').value = txt;
+  cachedText = txt;
+  updateMeta();
+}
+
+// Alle Verbesserungen auf einmal übernehmen
 function applyVorschlag() {
   if (!cachedVerbesserterText) return;
   document.getElementById('txt').value = cachedVerbesserterText;
   updateMeta();
   cachedText = cachedVerbesserterText;
-  // Schritte 2-4 zuruecksetzen damit neu analysiert werden kann
   done.delete(2); done.delete(3); done.delete(4);
   cachedVerbesserterText = '';
   goStep(1);
@@ -670,8 +692,6 @@ Antworte NUR mit gueltigem JSON:
     updTagSel(); done.add(3); document.getElementById('step-btn-3').className = 'step-btn done';
     const s4 = document.getElementById('step-btn-4'); s4.className = 'step-btn'; s4.onclick = () => goStep(4);
     document.getElementById('panel-3').style.display = 'none'; document.getElementById('result-3').style.display = 'block';
-    // Auto-Advance zu Schritt 4
-    autoAdvance('auto-advance-3-done', () => goStep(4));
   } catch(e) { const el = document.getElementById('err-3'); el.textContent = '\u26a0 ' + e.message; el.style.display = 'block'; }
   document.getElementById('btn-3').style.display = 'inline-flex'; document.getElementById('loading-3').style.display = 'none';
 }
