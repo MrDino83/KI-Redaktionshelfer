@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVV Beitragscheck</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;font-size:13px;background:#f5f4f0;color:#2C2C2A;min-height:100vh}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px}
+#lock-screen{position:fixed;inset:0;background:#f5f4f0;display:flex;align-items:center;justify-content:center;padding:20px;z-index:999}
+.lock-card{background:#fff;border:1px solid #E0DED8;border-radius:16px;padding:32px 28px;max-width:340px;width:100%;text-align:center}
+.lock-icon{width:48px;height:48px;border-radius:50%;background:#F1EFE8;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:22px}
+.lock-title{font-size:18px;font-weight:700;color:#1A1A18;margin-bottom:6px}
+.lock-sub{font-size:12px;color:#888780;margin-bottom:22px;line-height:1.5}
+.lock-input{width:100%;background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C2A;font-family:inherit;font-size:15px;padding:11px 12px;outline:none;text-align:center;letter-spacing:.2em;margin-bottom:8px}
+.lock-input:focus{border-color:#1D9E75}
+.lock-err{font-size:12px;color:#A32D2D;margin-bottom:10px;min-height:16px}
+.lock-btn{width:100%;background:#1D9E75;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;padding:11px;cursor:pointer}
+.lock-btn:hover{background:#169E6A}
+.lock-hint{font-size:11px;color:#C8C6C0;margin-top:14px}
+.logo-row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.dot{width:8px;height:8px;border-radius:50%;background:#1D9E75}
+.logo-text{font-size:10px;font-weight:600;letter-spacing:.1em;color:#888780;text-transform:uppercase}
+h1{font-size:22px;font-weight:700;color:#1A1A18;margin-bottom:3px}
+.tagline{font-size:11px;color:#888780;margin-bottom:16px}
+.api-bar{background:#FFF9E6;border:1px solid #FAC775;border-radius:8px;padding:9px 12px;font-size:12px;color:#633806;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.api-bar input{flex:1;min-width:180px;background:#fff;border:1px solid #E0DED8;border-radius:6px;font-family:monospace;font-size:12px;padding:5px 9px;outline:none;color:#2C2C2A}
+.api-bar input:focus{border-color:#1D9E75}
+.api-status{font-size:10px;padding:2px 7px;border-radius:8px;white-space:nowrap}
+.api-status.ok{background:#E1F5EE;color:#0F6E56}
+.api-status.warn{background:#FFF9E6;color:#854F0B}
+.api-status.loading{background:#F1EFE8;color:#888780}
+.steps{display:flex;margin-bottom:18px;border-radius:10px;overflow:hidden;border:1px solid #E0DED8}
+.step-btn{flex:1;padding:9px 4px;background:#fff;border:none;cursor:pointer;font-family:inherit;font-size:11px;color:#888780;display:flex;flex-direction:column;align-items:center;gap:2px;border-right:1px solid #E0DED8;transition:all .15s;line-height:1.3}
+.step-btn:last-child{border-right:none}
+.step-btn.active{background:#1D9E75;color:#fff}
+.step-btn.done{background:#E1F5EE;color:#0F6E56}
+.step-btn.locked{cursor:not-allowed;opacity:.4}
+.step-num{font-size:9px;font-weight:700;opacity:.7}
+.step-name{font-weight:600}
+.card{background:#fff;border:1px solid #E0DED8;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.lbl{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#888780;margin-bottom:7px;display:block}
+.sublbl{font-size:11px;color:#888780;margin-top:4px;line-height:1.5}
+textarea{width:100%;background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C2A;font-family:inherit;font-size:13px;line-height:1.65;padding:10px 12px;resize:vertical;min-height:170px;outline:none}
+textarea:focus{border-color:#1D9E75}
+select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C2A;font-family:inherit;font-size:12px;padding:7px 10px;outline:none;cursor:pointer;width:100%}
+.radio-group{display:flex;border-radius:8px;overflow:hidden;border:1px solid #E0DED8;width:fit-content}
+.radio-opt{padding:8px 16px;background:#fff;cursor:pointer;font-size:12px;color:#888780;border-right:1px solid #E0DED8;transition:all .15s;user-select:none}
+.radio-opt:last-child{border-right:none}
+.radio-opt.active{background:#1D9E75;color:#fff;font-weight:500}
+.checkbox-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+.cb-item{display:flex;align-items:center;gap:6px;padding:6px 11px;background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;cursor:pointer;user-select:none;transition:all .15s;font-size:12px;color:#5F5E5A}
+.cb-item:hover{border-color:#888780}
+.cb-item.active{background:#E6F1FB;border-color:#B5D4F4;color:#0C447C}
+.cb-item input{width:13px;height:13px;cursor:pointer;accent-color:#1D9E75}
+.meta-row{display:flex;gap:14px;margin-top:8px}
+.meta-item{font-size:11px;color:#888780}
+.meta-item span{color:#2C2C2A;font-weight:500}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.form-grid{grid-template-columns:1fr}}
+.btn-primary{background:#1D9E75;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;padding:10px 18px;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:5px}
+.btn-primary:hover{background:#169E6A}
+.btn-sec{background:transparent;border:1px solid #D3D1C7;border-radius:8px;color:#888780;font-family:inherit;font-size:12px;padding:7px 13px;cursor:pointer;transition:all .15s}
+.btn-sec:hover{border-color:#888780;color:#2C2C2A}
+.btn-sec.copied{border-color:#1D9E75;color:#1D9E75}
+.btn-row{display:flex;gap:8px;margin-top:12px;align-items:center;flex-wrap:wrap}
+.result-card{background:#fff;border:1px solid #E0DED8;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.r-section{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #F1EFE8}
+.r-section:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.r-title{font-size:12px;font-weight:600;color:#2C2C2A;margin-bottom:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:500}
+.badge-ok{background:#E1F5EE;color:#0F6E56}
+.badge-warn{background:#FFF9E6;color:#854F0B}
+.badge-err{background:#FCEBEB;color:#A32D2D}
+.r-text{font-size:12px;color:#5F5E5A;line-height:1.75}
+.r-vorschlag{background:#F0FBF7;border-left:3px solid #1D9E75;border-radius:0 6px 6px 0;padding:9px 11px;margin-top:8px;font-size:12px;color:#2C2C2A;line-height:1.7}
+.r-vorschlag-lbl{font-size:9px;font-weight:700;color:#1D9E75;margin-bottom:4px;text-transform:uppercase;letter-spacing:.07em;display:block}
+.muster-item{background:#F8F7F3;border-radius:6px;padding:8px 10px;margin-bottom:5px;border-left:3px solid #E0DED8}
+.muster-item.gefunden{border-left-color:#FAC775;background:#FFFBF0}
+.muster-name{font-size:11px;font-weight:600;color:#2C2C2A;margin-bottom:3px}
+.muster-text{font-size:11px;color:#5F5E5A;line-height:1.6}
+.muster-vsl{margin-top:6px;background:#F0FBF7;border-left:3px solid #1D9E75;border-radius:0 4px 4px 0;padding:7px 9px;font-size:11px;color:#2C2C2A;line-height:1.65}
+.muster-vsl-lbl{font-size:9px;font-weight:700;color:#1D9E75;display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid #D3D1C7;color:#5F5E5A;background:transparent;cursor:pointer;user-select:none;transition:all .12s}
+.tag:hover{border-color:#888780;color:#2C2C2A}
+.tag.on{font-weight:500;background:#E6F1FB;border-color:#B5D4F4;color:#0C447C}
+.grp{margin-bottom:11px}
+.grp-hd{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.grp-name{font-size:12px;font-weight:600;color:#2C2C2A}
+.grp-cnt{font-size:10px;background:#F1EFE8;border-radius:8px;padding:1px 6px;color:#888780}
+.neu-badge{font-size:9px;padding:1px 6px;border-radius:8px;background:#FAEEDA;color:#633806;border:1px solid #FAC775}
+.tag-sb{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;padding:10px 12px;margin-top:8px}
+.tag-out{margin-top:7px;padding-top:7px;border-top:1px solid #E0DED8;font-size:11px;color:#888780;font-family:monospace;word-break:break-all;line-height:1.7}
+.media-block{background:#fff;border:1px solid #E0DED8;border-radius:12px;margin-bottom:10px;overflow:hidden}
+.media-header{padding:10px 14px;background:#F8F7F3;border-bottom:1px solid #E0DED8;display:flex;align-items:center;gap:8px}
+.media-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.media-title{font-size:12px;font-weight:600;color:#2C2C2A}
+.media-meta{font-size:10px;color:#888780;margin-left:auto}
+.media-body{padding:12px 14px}
+.media-text{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;padding:10px 12px;font-size:12px;color:#2C2C2A;line-height:1.7;white-space:pre-wrap;min-height:60px}
+.media-hint{margin-top:6px;font-size:11px;color:#888780;font-style:italic}
+.media-copy{margin-top:8px;text-align:right}
+.loading{display:flex;align-items:center;gap:9px;color:#888780;font-size:12px}
+.spinner{width:16px;height:16px;border:2px solid #E0DED8;border-top-color:#1D9E75;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.info-box{background:#E6F1FB;border:1px solid #B5D4F4;border-radius:8px;padding:9px 12px;font-size:12px;color:#0C447C;margin-bottom:10px;line-height:1.6}
+.err-box{background:#FCEBEB;border:1px solid #F7C1C1;border-radius:8px;padding:9px 12px;font-size:12px;color:#A32D2D;margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-icon">&#128274;</div>
+    <div class="lock-title">AVV Beitragscheck</div>
+    <div class="lock-sub">Redaktionswerkzeug f&uuml;r hoher-list.de<br>Nur f&uuml;r das AVV-Redaktionsteam.</div>
+    <input class="lock-input" type="password" id="lock-pw" placeholder="Passwort" onkeydown="if(event.key==='Enter')unlock()">
+    <div class="lock-err" id="lock-err"></div>
+    <button class="lock-btn" onclick="unlock()">Anmelden</button>
+    <div class="lock-hint">AVV Hoher List &middot; &Ouml;ffentlichkeitsarbeit</div>
+  </div>
+</div>
+
+<div class="wrap" id="main-app" style="display:none">
+  <div class="logo-row"><div class="dot"></div><span class="logo-text">AVV Hoher List &middot; &Ouml;ffentlichkeitsarbeit</span></div>
+  <h1>Beitragscheck</h1>
+  <div class="tagline">Sprachstil &middot; Menschlichkeit &middot; Tags &middot; Medienformate &mdash; Wizard v2.0</div>
+
+  <div class="api-bar">
+    <span style="flex-shrink:0;font-weight:500">API-Key:</span>
+    <input type="password" id="apikey" placeholder="sk-ant-..." oninput="saveKey(this.value)">
+    <span class="api-status loading" id="api-status">Trainingsdaten laden&hellip;</span>
+  </div>
+
+  <div class="steps">
+    <button class="step-btn active" id="step-btn-1" onclick="goStep(1)"><span class="step-num">01</span><span class="step-name">Eingabe</span></button>
+    <button class="step-btn locked" id="step-btn-2"><span class="step-num">02</span><span class="step-name">Sprachstil</span></button>
+    <button class="step-btn locked" id="step-btn-3"><span class="step-num">03</span><span class="step-name">Menschlichkeit</span></button>
+    <button class="step-btn locked" id="step-btn-4"><span class="step-num">04</span><span class="step-name">Tags</span></button>
+    <button class="step-btn locked" id="step-btn-5"><span class="step-num">05</span><span class="step-name">Medien</span></button>
+  </div>
+
+  <!-- PANEL 1: Eingabe & Optionen -->
+  <div id="panel-1">
+    <div class="card">
+      <span class="lbl">Beitragstext</span>
+      <textarea id="txt" placeholder="Titel und vollst&auml;ndigen Text des Beitrags hier einf&uuml;gen&hellip;" oninput="updateMeta()"></textarea>
+      <div class="meta-row">
+        <div class="meta-item">W&ouml;rter: <span id="meta-words">0</span></div>
+        <div class="meta-item">Zeichen: <span id="meta-chars">0</span></div>
+        <div class="meta-item">S&auml;tze: <span id="meta-sents">0</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="form-grid">
+        <div>
+          <span class="lbl">Beitragskategorie</span>
+          <select id="cat">
+            <option value="">Bitte w&auml;hlen</option>
+            <option value="Astrofotos">Astrofotos</option>
+            <option value="Wissenswertes">Wissenswertes</option>
+            <option value="Wissenschaft">Wissenschaft &amp; Forschung</option>
+            <option value="Neuigkeiten">Neuigkeiten / Neues aus dem Verein</option>
+            <option value="Veranstaltungen">Veranstaltungen</option>
+            <option value="Sternenhimmel">Aktueller Sternenhimmel</option>
+            <option value="Mitglieder">Mitglieder-Content</option>
+          </select>
+          <div class="sublbl">Beeinflusst empfohlene Textl&auml;nge, Ton und Tag-Vorschl&auml;ge.</div>
+        </div>
+        <div>
+          <span class="lbl">Sprachstil</span>
+          <select id="modus">
+            <option value="sachlich">Sachlich (Ank&uuml;ndigungen, News)</option>
+            <option value="technisch">Technisch (Wissen, Ausr&uuml;stung)</option>
+            <option value="persoenlich">Pers&ouml;nlich (Erfahrungsberichte)</option>
+            <option value="emotional">Emotional (Highlights, Events)</option>
+          </select>
+          <div class="sublbl">Steuert Ton, Modalpartikeln und Muster-Anwendung beim Schreiben.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <span class="lbl">Verarbeitungsmodus</span>
+      <div class="radio-group">
+        <div class="radio-opt active" id="mode-ueberarbeiten" onclick="setMode('ueberarbeiten')">Text &uuml;berarbeiten</div>
+        <div class="radio-opt" id="mode-generieren" onclick="setMode('generieren')">Text neu generieren</div>
+      </div>
+      <div class="sublbl" id="mode-hint">Der bestehende Text wird analysiert und verbessert. Die Stimme des Autors bleibt erhalten.</div>
+    </div>
+    <div class="card">
+      <span class="lbl">Ausgabeformate</span>
+      <div class="sublbl">Welche Formate sollen zus&auml;tzlich erzeugt werden? Im Standard alle inaktiv.</div>
+      <div class="checkbox-grid">
+        <label class="cb-item" id="cb-website"><input type="checkbox" id="chk-website" onchange="updateCb('website')"> Website-Beitrag</label>
+        <label class="cb-item" id="cb-instagram"><input type="checkbox" id="chk-instagram" onchange="updateCb('instagram')"> Instagram</label>
+        <label class="cb-item" id="cb-facebook"><input type="checkbox" id="chk-facebook" onchange="updateCb('facebook')"> Facebook</label>
+        <label class="cb-item" id="cb-bluesky"><input type="checkbox" id="chk-bluesky" onchange="updateCb('bluesky')"> Bluesky</label>
+        <label class="cb-item" id="cb-mastodon"><input type="checkbox" id="chk-mastodon" onchange="updateCb('mastodon')"> Mastodon</label>
+        <label class="cb-item" id="cb-presse"><input type="checkbox" id="chk-presse" onchange="updateCb('presse')"> Pressemitteilung</label>
+      </div>
+    </div>
+    <div id="err-1" style="display:none" class="err-box"></div>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-1" onclick="startWizard()">Beitragscheck starten &rarr;</button>
+    </div>
+  </div>
+
+  <!-- PANEL 2: Sprachstil -->
+  <div id="panel-2" style="display:none">
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-2" onclick="runStep2()">Sprachstil pr&uuml;fen &rarr;</button>
+      <span id="loading-2" style="display:none" class="loading"><div class="spinner"></div>Analysiere Sprachstil&hellip;</span>
+    </div>
+    <div id="err-2" style="display:none;margin-top:8px" class="err-box"></div>
+  </div>
+  <div id="result-2" style="display:none">
+    <div class="result-card">
+      <div class="r-section">
+        <div class="r-title">Gesamtbewertung <span class="badge" id="badge-gesamt"></span></div>
+        <div class="r-text" id="text-gesamt"></div>
+      </div>
+      <div class="r-section">
+        <div class="r-title">Ton &amp; Haltung <span class="badge" id="badge-ton"></span></div>
+        <div class="r-text" id="text-ton"></div>
+        <div class="r-vorschlag" id="vsl-ton" style="display:none">
+          <span class="r-vorschlag-lbl">Verbesserungsvorschlag</span>
+          <div id="vsl-ton-text"></div>
+        </div>
+      </div>
+      <div class="r-section">
+        <div class="r-title">Satzbau &amp; Struktur <span class="badge" id="badge-satzbau"></span></div>
+        <div class="r-text" id="text-satzbau"></div>
+        <div class="r-vorschlag" id="vsl-satzbau" style="display:none">
+          <span class="r-vorschlag-lbl">Verbesserungsvorschlag</span>
+          <div id="vsl-satzbau-text"></div>
+        </div>
+      </div>
+      <div class="r-section">
+        <div class="r-title">L&auml;nge &amp; Umfang <span class="badge" id="badge-laenge"></span></div>
+        <div class="r-text" id="text-laenge"></div>
+        <div class="r-vorschlag" id="vsl-laenge" style="display:none">
+          <span class="r-vorschlag-lbl">Verbesserungsvorschlag</span>
+          <div id="vsl-laenge-text"></div>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goStep(3)">Weiter: Menschlichkeit &rarr;</button>
+      <button class="btn-sec" onclick="resetAll()">Von vorne</button>
+    </div>
+  </div>
+
+  <!-- PANEL 3: Menschlichkeit -->
+  <div id="panel-3" style="display:none">
+    <div class="info-box">12 KI-Sprachmuster werden gepr&uuml;ft. Gefundene Muster erhalten direkt darunter einen konkreten Verbesserungsvorschlag.</div>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-3" onclick="runStep3()">Menschlichkeit pr&uuml;fen &rarr;</button>
+      <span id="loading-3" style="display:none" class="loading"><div class="spinner"></div>Analysiere 12 Sprachmuster&hellip;</span>
+    </div>
+    <div id="err-3" style="display:none;margin-top:8px" class="err-box"></div>
+  </div>
+  <div id="result-3" style="display:none">
+    <div class="result-card">
+      <div class="r-section">
+        <div class="r-title">KI-Muster-Check <span class="badge" id="badge-muster"></span></div>
+        <div class="r-text" id="text-muster-summary"></div>
+      </div>
+      <div id="muster-list"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goStep(4)">Weiter: Tags &rarr;</button>
+      <button class="btn-sec" onclick="resetAll()">Von vorne</button>
+    </div>
+  </div>
+
+  <!-- PANEL 4: Tags -->
+  <div id="panel-4" style="display:none">
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-4" onclick="runStep4()">Tags analysieren &rarr;</button>
+      <span id="loading-4" style="display:none" class="loading"><div class="spinner"></div>Taxonomie v0.3 wird angewendet&hellip;</span>
+    </div>
+    <div id="err-4" style="display:none;margin-top:8px" class="err-box"></div>
+  </div>
+  <div id="result-4" style="display:none">
+    <div class="result-card">
+      <div class="r-title" style="margin-bottom:10px">Tag-Vorschl&auml;ge &middot; Taxonomie v0.3</div>
+      <div id="tag-info" class="r-text" style="margin-bottom:10px"></div>
+      <div id="tag-groups"></div>
+      <div class="tag-sb">
+        <div style="font-size:10px;color:#888780;font-weight:500;margin-bottom:7px">Ausgew&auml;hlte Tags (<span id="tag-cnt">0</span>)</div>
+        <div class="tags" id="sel-tags"><span style="font-size:12px;color:#888780">Keine Tags ausgew&auml;hlt</span></div>
+        <div class="tag-out" id="tag-out" style="display:none"></div>
+      </div>
+      <div class="btn-row" style="margin-top:10px;justify-content:flex-end">
+        <button class="btn-sec" id="cpbtn-tags" onclick="copyTags()">Tags kopieren</button>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-to-media" onclick="goStep(5)" style="display:none">Weiter: Medienformate &rarr;</button>
+      <button class="btn-primary" id="btn-finish" onclick="resetAll()" style="display:none">Neuer Beitrag</button>
+      <button class="btn-sec" onclick="resetAll()">Von vorne</button>
+    </div>
+  </div>
+
+  <!-- PANEL 5: Medienformate -->
+  <div id="panel-5" style="display:none">
+    <div class="info-box" id="media-info">Texte werden f&uuml;r die ausgew&auml;hlten Medienformate generiert.</div>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-5" onclick="runStep5()">Medientexte generieren &rarr;</button>
+      <span id="loading-5" style="display:none" class="loading"><div class="spinner"></div>Generiere Medienformate&hellip;</span>
+    </div>
+    <div id="err-5" style="display:none;margin-top:8px" class="err-box"></div>
+  </div>
+  <div id="result-5" style="display:none">
+    <div id="media-results"></div>
+    <div class="btn-row"><button class="btn-sec" onclick="resetAll()">Neuer Beitrag</button></div>
+  </div>
+</div>
+
+<script>
+const PASS_HASH = 'a6641fb523ee82d797d0e84c75dca208a1ace289fefc3a1d7112ed042601c294';
+async function sha256(s) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
+}
+async function unlock() {
+  const pw = document.getElementById('lock-pw').value;
+  if (await sha256(pw) === PASS_HASH) {
+    localStorage.setItem('avv_unlocked', '1');
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    loadTraining();
+  } else {
+    const e = document.getElementById('lock-err');
+    e.textContent = 'Falsches Passwort.';
+    document.getElementById('lock-pw').value = '';
+    setTimeout(() => e.textContent = '', 2000);
+  }
+}
+function saveKey(v) { localStorage.setItem('avv_apikey', v); }
+
+// ── GitHub Raw — Trainingsdaten live aus dem Repository ────────────────────────
+// Struktur: MrDino83/AVV → KI-Redaktionshelfer/trainingsdateien/
+// Aenderungen an .md-Dateien in GitHub wirken sofort im Tool (kein Reload noetig)
+const GH = 'https://raw.githubusercontent.com/MrDino83/AVV/main/KI-Redaktionshelfer/trainingsdateien/';
+const FILES = {
+  sprachstil: 'AVV_Beitragscheck_Sprachstil.md',
+  menschlich: 'AVV_Beitragscheck_MenschlicheSprache.md',
+  tags:       'AVV_Beitragscheck_TagTaxonomie.md',
+  instagram:  'AVV_Beitragscheck_Instagram.md',
+  facebook:   'AVV_Beitragscheck_Facebook.md',
+  bluesky:    'AVV_Beitragscheck_Bluesky.md',
+  mastodon:   'AVV_Beitragscheck_Mastodon.md',
+  presse:     'AVV_Beitragscheck_Pressemitteilung.md',
+};
+let T = {};
+
+async function loadTraining() {
+  const st = document.getElementById('api-status');
+  st.textContent = 'Trainingsdaten laden\u2026'; st.className = 'api-status loading';
+  const res = await Promise.allSettled(
+    Object.entries(FILES).map(async ([k, f]) => {
+      const r = await fetch(GH + f + '?t=' + Date.now());
+      if (!r.ok) throw new Error(r.status);
+      return [k, await r.text()];
+    })
+  );
+  let ok = 0, fail = 0;
+  res.forEach(r => {
+    if (r.status === 'fulfilled') { T[r.value[0]] = r.value[1]; ok++; }
+    else fail++;
+  });
+  st.textContent = fail === 0 ? 'Bereit (' + ok + ' Dateien)' : ok + ' geladen, ' + fail + ' Fehler';
+  st.className = 'api-status ' + (fail === 0 ? 'ok' : 'warn');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('avv_unlocked') === '1') {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    loadTraining();
+  }
+  const k = localStorage.getItem('avv_apikey');
+  if (k) document.getElementById('apikey').value = k;
+});
+
+let done = new Set(), cachedText = '', procMode = 'ueberarbeiten';
+let tagSel = new Set(), selMedia = new Set();
+
+function updateMeta() {
+  const t = document.getElementById('txt').value;
+  document.getElementById('meta-words').textContent = t.trim() ? t.trim().split(/\s+/).length : 0;
+  document.getElementById('meta-chars').textContent = t.length;
+  document.getElementById('meta-sents').textContent = t.split(/[.!?]+/).filter(s => s.trim().length > 3).length;
+}
+function setMode(m) {
+  procMode = m;
+  ['ueberarbeiten','generieren'].forEach(x =>
+    document.getElementById('mode-' + x).classList.toggle('active', x === m)
+  );
+  document.getElementById('mode-hint').textContent = m === 'ueberarbeiten'
+    ? 'Der bestehende Text wird analysiert und verbessert. Die Stimme des Autors bleibt erhalten.'
+    : 'Neuer Text wird auf Basis des Inhalts generiert \u2014 in AVV-Sprachstil und gew\u00e4hltem Modus.';
+}
+function updateCb(k) {
+  const chk = document.getElementById('chk-' + k), lbl = document.getElementById('cb-' + k);
+  if (chk.checked) { selMedia.add(k); lbl.classList.add('active'); }
+  else             { selMedia.delete(k); lbl.classList.remove('active'); }
+}
+function goStep(n) {
+  if (n > 1 && !done.has(n - 1)) return;
+  [1,2,3,4,5].forEach(i => {
+    const sb = document.getElementById('step-btn-' + i);
+    sb.className = 'step-btn' + (i === n ? ' active' : done.has(i) ? ' done' : ' locked');
+    sb.onclick = (i <= n && (i === 1 || done.has(i - 1))) ? () => goStep(i) : null;
+    document.getElementById('panel-' + i).style.display = 'none';
+    const r = document.getElementById('result-' + i); if (r) r.style.display = 'none';
+  });
+  if (done.has(n)) document.getElementById('result-' + n).style.display = 'block';
+  else             document.getElementById('panel-' + n).style.display = 'block';
+}
+function setBadge(id, v) {
+  const el = document.getElementById(id); if (!el) return;
+  const m = { ok: ['i.\u00a0O.','badge-ok'], warn: ['Hinweis','badge-warn'], fehler: ['\u00dcberarbeiten','badge-err'] };
+  const [t, c] = m[v] || ['\u2013', '']; el.textContent = t; el.className = 'badge ' + c;
+}
+function setHTML(id, t) { const el = document.getElementById(id); if (el) el.innerHTML = (t || '').replace(/\n/g, '<br>'); }
+function showVsl(pre, t) {
+  const box = document.getElementById('vsl-' + pre), inner = document.getElementById('vsl-' + pre + '-text');
+  if (t && t.trim()) { inner.innerHTML = t.replace(/\n/g, '<br>'); box.style.display = 'block'; }
+  else box.style.display = 'none';
+}
+
+async function api(sys, usr, max = 1500) {
+  const key = document.getElementById('apikey').value.trim();
+  if (!key) throw new Error('Bitte API-Key eingeben.');
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+    body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: max, system: sys, messages: [{ role: 'user', content: usr }] })
+  });
+  const d = await r.json();
+  if (d.error) throw new Error(d.error.message);
+  let raw = (d.content?.find(b => b.type === 'text')?.text || '').trim();
+  raw = raw.replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/\s*```$/, '').trim();
+  return JSON.parse(raw);
+}
+
+function startWizard() {
+  const txt = document.getElementById('txt').value.trim();
+  if (!txt) { const e = document.getElementById('err-1'); e.textContent = 'Bitte Beitragstext eingeben.'; e.style.display = 'block'; return; }
+  document.getElementById('err-1').style.display = 'none';
+  cachedText = txt; done.clear(); goStep(2);
+}
+
+async function runStep2() {
+  document.getElementById('err-2').style.display = 'none';
+  document.getElementById('btn-2').style.display = 'none';
+  document.getElementById('loading-2').style.display = 'flex';
+  const cat = document.getElementById('cat').value, modus = document.getElementById('modus').value;
+  const sys = `Du bist Redaktionsassistent der AVV.
+Schreibmodus: ${modus}. Modus: ${procMode === 'generieren' ? 'Neu generieren' : 'Ueberarbeiten'}. Kategorie: ${cat || 'nicht angegeben'}.
+SPRACHSTIL-GUIDE:\n${T.sprachstil || '(nicht geladen)'}
+MENSCHLICHKEITS-REGELN (beim Formulieren von Vorschlaegen aktiv anwenden):\n${T.menschlich || '(nicht geladen)'}
+Pruefe den Text. Gib fuer jede Rubrik Bewertung + konkreten Verbesserungsvorschlag direkt darunter.
+JSON ohne Backticks:
+{"gesamt":"ok|warn|fehler","gesamt_text":"","ton":"ok|warn|fehler","ton_text":"","ton_vorschlag":"","satzbau":"ok|warn|fehler","satzbau_text":"","satzbau_vorschlag":"","laenge":"ok|warn|fehler","laenge_text":"","laenge_vorschlag":""}`;
+  try {
+    const p = await api(sys, (cat ? 'Kategorie: ' + cat + '\n' : '') + 'Beitragstext:\n' + cachedText);
+    setBadge('badge-gesamt', p.gesamt); setHTML('text-gesamt', p.gesamt_text);
+    setBadge('badge-ton', p.ton); setHTML('text-ton', p.ton_text); showVsl('ton', p.ton_vorschlag);
+    setBadge('badge-satzbau', p.satzbau); setHTML('text-satzbau', p.satzbau_text); showVsl('satzbau', p.satzbau_vorschlag);
+    setBadge('badge-laenge', p.laenge); setHTML('text-laenge', p.laenge_text); showVsl('laenge', p.laenge_vorschlag);
+    done.add(2); document.getElementById('step-btn-2').className = 'step-btn done';
+    const s3 = document.getElementById('step-btn-3'); s3.className = 'step-btn'; s3.onclick = () => goStep(3);
+    document.getElementById('panel-2').style.display = 'none'; document.getElementById('result-2').style.display = 'block';
+  } catch(e) { const el = document.getElementById('err-2'); el.textContent = '\u26a0 ' + e.message; el.style.display = 'block'; }
+  document.getElementById('btn-2').style.display = 'inline-flex'; document.getElementById('loading-2').style.display = 'none';
+}
+
+async function runStep3() {
+  document.getElementById('err-3').style.display = 'none';
+  document.getElementById('btn-3').style.display = 'none';
+  document.getElementById('loading-3').style.display = 'flex';
+  const modus = document.getElementById('modus').value;
+  const sys = `Du bist Redaktionsassistent der AVV. Schreibmodus: ${modus}.
+MENSCHLICHKEITS-GUIDE (nicht nur pruefen — beim Schreiben aller Vorschlaege aktiv anwenden):
+${T.menschlich || '(nicht geladen)'}
+Muster 5+6 nur bei persoenlich/emotional pruefen. Alle 12 Muster zurueckgeben.
+JSON ohne Backticks:
+{"anzahl_gefunden":0,"zusammenfassung":"","muster":[{"nr":1,"name":"...","gefunden":false,"hinweis":"","vorschlag":""}]}`;
+  try {
+    const p = await api(sys, 'Schreibmodus: ' + modus + '\n\nBeitragstext:\n' + cachedText, 2000);
+    const anz = p.anzahl_gefunden || 0;
+    const bm = document.getElementById('badge-muster');
+    bm.textContent = anz + ' von 12 erkannt'; bm.className = 'badge ' + (anz === 0 ? 'badge-ok' : anz <= 3 ? 'badge-warn' : 'badge-err');
+    setHTML('text-muster-summary', p.zusammenfassung);
+    const list = document.getElementById('muster-list'); list.innerHTML = '';
+    (p.muster || []).forEach(m => {
+      const div = document.createElement('div'); div.className = 'muster-item ' + (m.gefunden ? 'gefunden' : '');
+      div.innerHTML = `<div class="muster-name">${m.nr}. ${m.name} <span style="font-size:10px;font-weight:400;color:${m.gefunden ? '#854F0B' : '#1D9E75'}">${m.gefunden ? 'Hinweis' : 'OK'}</span></div>`
+        + `<div class="muster-text">${m.hinweis || ''}</div>`
+        + (m.gefunden && m.vorschlag ? `<div class="muster-vsl"><span class="muster-vsl-lbl">Vorschlag</span>${m.vorschlag}</div>` : '');
+      list.appendChild(div);
+    });
+    done.add(3); document.getElementById('step-btn-3').className = 'step-btn done';
+    const s4 = document.getElementById('step-btn-4'); s4.className = 'step-btn'; s4.onclick = () => goStep(4);
+    document.getElementById('panel-3').style.display = 'none'; document.getElementById('result-3').style.display = 'block';
+  } catch(e) { const el = document.getElementById('err-3'); el.textContent = '\u26a0 ' + e.message; el.style.display = 'block'; }
+  document.getElementById('btn-3').style.display = 'inline-flex'; document.getElementById('loading-3').style.display = 'none';
+}
+
+const TAG_GRP = [
+  {k:'Katalog_Messier',l:'Katalog \u2013 Messier'},{k:'Katalog_NGC_IC',l:'Katalog \u2013 NGC\u00a0/\u00a0IC'},
+  {k:'Objekttyp',l:'Objekttyp'},{k:'Beobachtung',l:'Beobachtung\u00a0&\u00a0Methodik'},
+  {k:'Ausruestung',l:'Ausr\u00fcstung\u00a0&\u00a0Technik'},{k:'Wissen',l:'Themen\u00a0&\u00a0Wissensgebiete'},
+  {k:'Verein_Ort',l:'Verein,\u00a0Ort\u00a0&\u00a0Veranstaltungen'},{k:'Zielgruppe',l:'Zielgruppe'},
+  {k:'Personen',l:'Personen'},{k:'Neu',l:'Neue\u00a0Vorschl\u00e4ge',neu:true},
+];
+async function runStep4() {
+  document.getElementById('err-4').style.display = 'none';
+  document.getElementById('btn-4').style.display = 'none';
+  document.getElementById('loading-4').style.display = 'flex';
+  const cat = document.getElementById('cat').value;
+  const sys = `Du bist Verschlagwortungs-Assistent fuer hoher-list.de (AVV).
+TAG-TAXONOMIE:\n${T.tags || '(nicht geladen)'}
+JSON ohne Backticks:
+{"reasoning":"","tags":{"Katalog_Messier":[],"Katalog_NGC_IC":[],"Objekttyp":[],"Beobachtung":[],"Ausruestung":[],"Wissen":[],"Verein_Ort":[],"Zielgruppe":[],"Personen":[],"Neu":[]}}`;
+  try {
+    const p = await api(sys, (cat ? 'Kategorie: ' + cat + '\n' : '') + 'Beitragstext:\n' + cachedText);
+    tagSel = new Set(); Object.values(p.tags || {}).flat().forEach(t => { if (t) tagSel.add(t); });
+    if (p.reasoning) document.getElementById('tag-info').innerHTML = '<strong>Analyse:</strong> ' + p.reasoning;
+    const g = document.getElementById('tag-groups'); g.innerHTML = '';
+    TAG_GRP.forEach(grp => {
+      const tags = p.tags?.[grp.k] || []; if (!tags.length) return;
+      const div = document.createElement('div'); div.className = 'grp';
+      div.innerHTML = `<div class="grp-hd"><span class="grp-name">${grp.l}</span><span class="grp-cnt">${tags.length}</span>${grp.neu ? '<span class="neu-badge">Neu</span>' : ''}</div><div class="tags" id="tg_${grp.k}"></div>`;
+      g.appendChild(div);
+      tags.forEach(t => {
+        const el = document.createElement('span'); el.className = 'tag' + (tagSel.has(t) ? ' on' : '');
+        el.textContent = t + (tagSel.has(t) ? ' \u00d7' : ' +'); el.onclick = () => togTag(t, el);
+        div.querySelector('#tg_' + grp.k).appendChild(el);
+      });
+    });
+    updTagSel(); done.add(4); document.getElementById('step-btn-4').className = 'step-btn done';
+    if (selMedia.size > 0) {
+      const s5 = document.getElementById('step-btn-5'); s5.className = 'step-btn'; s5.onclick = () => goStep(5);
+      document.getElementById('btn-to-media').style.display = 'inline-flex';
+      document.getElementById('btn-finish').style.display = 'none';
+    } else {
+      document.getElementById('btn-to-media').style.display = 'none';
+      document.getElementById('btn-finish').style.display = 'inline-flex';
+    }
+    document.getElementById('panel-4').style.display = 'none'; document.getElementById('result-4').style.display = 'block';
+  } catch(e) { const el = document.getElementById('err-4'); el.textContent = '\u26a0 ' + e.message; el.style.display = 'block'; }
+  document.getElementById('btn-4').style.display = 'inline-flex'; document.getElementById('loading-4').style.display = 'none';
+}
+function togTag(t, el) {
+  if (tagSel.has(t)) { tagSel.delete(t); el.className = 'tag'; el.textContent = t + ' +'; }
+  else               { tagSel.add(t); el.className = 'tag on'; el.textContent = t + ' \u00d7'; }
+  updTagSel();
+}
+function updTagSel() {
+  const arr = [...tagSel]; document.getElementById('tag-cnt').textContent = arr.length;
+  const box = document.getElementById('sel-tags');
+  box.innerHTML = arr.length === 0 ? '<span style="font-size:12px;color:#888780">Keine Tags ausgew\u00e4hlt</span>'
+    : arr.map(t => `<span class="tag on" onclick="rmTag('${t.replace(/'/g, "\\'")}');">${t}</span>`).join('');
+  const out = document.getElementById('tag-out');
+  if (arr.length > 0) { out.textContent = arr.join(', '); out.style.display = 'block'; } else out.style.display = 'none';
+}
+function rmTag(t) {
+  tagSel.delete(t);
+  document.querySelectorAll('.tag').forEach(el => { if (el.textContent.startsWith(t + ' ')) { el.className = 'tag'; el.textContent = t + ' +'; } });
+  updTagSel();
+}
+function copyTags() {
+  const arr = [...tagSel]; if (!arr.length) return;
+  navigator.clipboard.writeText(arr.join(', '));
+  const b = document.getElementById('cpbtn-tags'); b.textContent = '\u2713 Kopiert'; b.classList.add('copied');
+  setTimeout(() => { b.textContent = 'Tags kopieren'; b.classList.remove('copied'); }, 1500);
+}
+
+const MEDIA_CFG = {
+  website:  { label: 'Website-Beitrag',  color: '#1D9E75', tkey: null },
+  instagram:{ label: 'Instagram',        color: '#E1306C', tkey: 'instagram' },
+  facebook: { label: 'Facebook',         color: '#1877F2', tkey: 'facebook' },
+  bluesky:  { label: 'Bluesky',          color: '#0085FF', tkey: 'bluesky' },
+  mastodon: { label: 'Mastodon',         color: '#6364FF', tkey: 'mastodon' },
+  presse:   { label: 'Pressemitteilung', color: '#5F5E5A', tkey: 'presse' },
+};
+async function runStep5() {
+  const mList = [...selMedia].filter(m => MEDIA_CFG[m]);
+  if (!mList.length) { done.add(5); document.getElementById('panel-5').style.display = 'none'; document.getElementById('result-5').style.display = 'block'; return; }
+  document.getElementById('media-info').textContent = 'Generiere f\u00fcr: ' + mList.map(m => MEDIA_CFG[m].label).join(', ');
+  document.getElementById('err-5').style.display = 'none';
+  document.getElementById('btn-5').style.display = 'none';
+  document.getElementById('loading-5').style.display = 'flex';
+  const modus = document.getElementById('modus').value, cat = document.getElementById('cat').value;
+  const res = document.getElementById('media-results'); res.innerHTML = '';
+  await Promise.allSettled(mList.map(async mk => {
+    const cfg = MEDIA_CFG[mk];
+    const pg = cfg.tkey ? (T[cfg.tkey] || '') : '';
+    const sys = `Du bist Texter der AVV. Format: ${cfg.label}. Schreibmodus: ${modus}. Kategorie: ${cat || 'n/a'}. Modus: ${procMode === 'generieren' ? 'Neu' : 'Adaptieren'}.
+SPRACHSTIL:\n${T.sprachstil || ''}
+MENSCHLICHKEITS-REGELN (aktiv beim Schreiben anwenden):\n${T.menschlich || ''}
+${pg ? '\nPLATTFORM-GUIDE fuer ' + cfg.label + ':\n' + pg : ''}
+Erstelle optimalen Text fuer ${cfg.label}. Authentisch, nicht KI-generiert wirkend.
+JSON ohne Backticks: {"text":"Text mit \\n fuer Zeilenumbrueche","hinweis":"1 kurzer Hinweis"}`;
+    try {
+      const p = await api(sys, 'Beitragstext:\n' + cachedText, 1000);
+      addMedia(res, cfg, mk, p.text || '', p.hinweis || '');
+    } catch(e) { addMedia(res, cfg, mk, 'Fehler: ' + e.message, ''); }
+  }));
+  done.add(5); document.getElementById('step-btn-5').className = 'step-btn done';
+  document.getElementById('panel-5').style.display = 'none'; document.getElementById('result-5').style.display = 'block';
+  document.getElementById('btn-5').style.display = 'inline-flex'; document.getElementById('loading-5').style.display = 'none';
+}
+function addMedia(container, cfg, key, text, hint) {
+  const div = document.createElement('div'); div.className = 'media-block';
+  div.innerHTML = `<div class="media-header"><div class="media-icon" style="background:${cfg.color}">&#128196;</div><div class="media-title">${cfg.label}</div><div class="media-meta">${text.replace(/\n/g,' ').length} Zeichen</div></div>`
+    + `<div class="media-body"><div class="media-text" id="mt-${key}">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>${hint ? `<div class="media-hint">${hint}</div>` : ''}<div class="media-copy"><button class="btn-sec" id="cp-${key}" onclick="cpMedia('${key}')">Kopieren</button></div></div>`;
+  container.appendChild(div);
+}
+function cpMedia(key) {
+  const el = document.getElementById('mt-' + key); if (!el) return;
+  navigator.clipboard.writeText(el.textContent);
+  const b = document.getElementById('cp-' + key); b.textContent = '\u2713 Kopiert'; b.classList.add('copied');
+  setTimeout(() => { b.textContent = 'Kopieren'; b.classList.remove('copied'); }, 1500);
+}
+
+function resetAll() {
+  done = new Set(); cachedText = ''; tagSel = new Set(); selMedia = new Set();
+  document.getElementById('txt').value = ''; document.getElementById('cat').value = ''; document.getElementById('modus').value = 'sachlich';
+  setMode('ueberarbeiten');
+  ['website','instagram','facebook','bluesky','mastodon','presse'].forEach(k => {
+    document.getElementById('chk-' + k).checked = false; document.getElementById('cb-' + k).classList.remove('active');
+  });
+  [1,2,3,4,5].forEach(i => {
+    const p = document.getElementById('panel-' + i); if (p) p.style.display = i === 1 ? 'block' : 'none';
+    const r = document.getElementById('result-' + i); if (r) r.style.display = 'none';
+    const e = document.getElementById('err-' + i); if (e) e.style.display = 'none';
+    const b = document.getElementById('btn-' + i); if (b) b.style.display = 'inline-flex';
+    const l = document.getElementById('loading-' + i); if (l) l.style.display = 'none';
+  });
+  [1,2,3,4,5].forEach(i => {
+    const sb = document.getElementById('step-btn-' + i);
+    sb.className = 'step-btn' + (i === 1 ? ' active' : ' locked');
+    sb.onclick = i === 1 ? () => goStep(1) : null;
+  });
+  updateMeta();
+}
+</script>
+</body>
+</html>
