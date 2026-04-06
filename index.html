@@ -214,66 +214,50 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
   <div id="panel-2" style="display:none">
     <div class="btn-row">
       <button class="btn-primary" id="btn-2" onclick="runStep2()">Sprache &amp; Stil pr&uuml;fen &rarr;</button>
-      <span id="loading-2" style="display:none" class="loading"><div class="spinner"></div>Analysiere Sprache, Stil &amp; Menschlichkeit&hellip;</span>
+      <span id="loading-2" style="display:none" class="loading"><div class="spinner"></div>Analysiere&hellip;</span>
     </div>
     <div id="err-2" style="display:none;margin-top:8px" class="err-box"></div>
   </div>
   <div id="result-2" style="display:none">
-    <!-- Sprachstil-Ergebnisse -->
-    <div class="result-card">
-      <div class="r-section">
-        <div class="r-title">Gesamtbewertung <span class="badge" id="badge-gesamt"></span></div>
-        <div class="r-text" id="text-gesamt"></div>
+    <!-- Annotierter Text (primär) -->
+    <div class="result-card" id="annot-card">
+      <div class="r-title" style="margin-bottom:8px">Textanalyse <span class="badge" id="badge-gesamt"></span></div>
+      <div id="annot-box" class="annot-text-box"></div>
+      <div class="annot-legend">
+        <span><i style="background:#E1F5EE;border:1px solid #1D9E75"></i> Gut</span>
+        <span><i style="background:#FFF3CD;border:1px solid #FAC775"></i> Hinweis / Verbesserung</span>
+        <span><i style="background:#FCEBEB;border:1px solid #E55353"></i> Kritisch</span>
+        <span style="color:#C8C6C0;font-size:10px">&nbsp;&#8212;&nbsp;Mouseover = Details</span>
       </div>
+      <div class="btn-row" style="margin-top:10px">
+        <button class="btn-primary" id="btn-apply-vsl" style="display:none" onclick="applyVorschlag()">&#10003; Verbesserten Text &uuml;bernehmen</button>
+      </div>
+    </div>
+    <!-- Sprachstil-Details -->
+    <div class="result-card" style="margin-top:10px">
       <div class="r-section">
         <div class="r-title">Ton &amp; Haltung <span class="badge" id="badge-ton"></span></div>
         <div class="r-text" id="text-ton"></div>
-        <div class="r-vorschlag" id="vsl-ton" style="display:none">
-          <span class="r-vorschlag-lbl">Verbesserungsvorschlag</span>
-          <div id="vsl-ton-text"></div>
-        </div>
+        <div class="r-vorschlag" id="vsl-ton" style="display:none"><span class="r-vorschlag-lbl">Vorschlag</span><div id="vsl-ton-text"></div></div>
       </div>
       <div class="r-section">
         <div class="r-title">Satzbau &amp; Struktur <span class="badge" id="badge-satzbau"></span></div>
         <div class="r-text" id="text-satzbau"></div>
-        <div class="r-vorschlag" id="vsl-satzbau" style="display:none">
-          <span class="r-vorschlag-lbl">Verbesserungsvorschlag</span>
-          <div id="vsl-satzbau-text"></div>
-        </div>
+        <div class="r-vorschlag" id="vsl-satzbau" style="display:none"><span class="r-vorschlag-lbl">Vorschlag</span><div id="vsl-satzbau-text"></div></div>
       </div>
       <div class="r-section">
         <div class="r-title">L&auml;nge &amp; Umfang <span class="badge" id="badge-laenge"></span></div>
         <div class="r-text" id="text-laenge"></div>
-        <div class="r-vorschlag" id="vsl-laenge" style="display:none">
-          <span class="r-vorschlag-lbl">Verbesserungsvorschlag</span>
-          <div id="vsl-laenge-text"></div>
-        </div>
+        <div class="r-vorschlag" id="vsl-laenge" style="display:none"><span class="r-vorschlag-lbl">Vorschlag</span><div id="vsl-laenge-text"></div></div>
       </div>
-    </div>
-    <!-- Annotierter Text -->
-    <div class="result-card" id="annot-card" style="display:none">
-      <div class="r-title" style="margin-bottom:8px">Textansicht mit Markierungen</div>
-      <div id="annot-box"></div>
-      <div class="annot-legend">
-        <span><i style="background:#FFF3CD;border:1px solid #FAC775"></i> Hinweis</span>
-        <span><i style="background:#FCEBEB;border:1px solid #E55353"></i> Kritisch</span>
-        <span><i style="background:#E1F5EE;border:1px solid #1D9E75"></i> i.&thinsp;O.</span>
-        <span style="color:#C8C6C0;font-size:10px">Mouseover = Tipp</span>
-      </div>
-      <div class="btn-row" style="margin-top:10px">
-        <button class="btn-primary" id="btn-apply-vsl" style="display:none" onclick="applyVorschlag()">&#10003; Verbesserter Text &uuml;bernehmen</button>
-      </div>
-    </div>
-    <!-- KI-Muster -->
-    <div class="result-card" style="margin-top:10px">
       <div class="r-section">
-        <div class="r-title">KI-Muster-Check <span class="badge" id="badge-muster"></span></div>
+        <div class="r-title">KI-Muster <span class="badge" id="badge-muster"></span></div>
         <div class="r-text" id="text-muster-summary"></div>
       </div>
-      <div id="muster-list"></div>
     </div>
+    <div id="auto-advance-2" class="info-box" style="display:none;margin-top:8px"></div>
     <div class="btn-row">
-      <button class="btn-primary" onclick="goStep(3)">Weiter: Tags &rarr;</button>
+      <button class="btn-primary" onclick="goStep(3);runStep3()">Weiter: Tags &rarr;</button>
       <button class="btn-sec" onclick="resetAll()">Von vorne</button>
     </div>
   </div>
@@ -282,9 +266,10 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
   <div id="panel-3" style="display:none">
     <div class="btn-row">
       <button class="btn-primary" id="btn-3" onclick="runStep3()">Tags analysieren &rarr;</button>
-      <span id="loading-3" style="display:none" class="loading"><div class="spinner"></div>Taxonomie v0.3 wird angewendet&hellip;</span>
+      <span id="loading-3" style="display:none" class="loading"><div class="spinner"></div>Tags werden analysiert&hellip;</span>
     </div>
     <div id="err-3" style="display:none;margin-top:8px" class="err-box"></div>
+    <div id="auto-advance-3" class="info-box" style="display:none;margin-top:8px"></div>
   </div>
   <div id="result-3" style="display:none">
     <div class="result-card">
@@ -300,6 +285,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
         <button class="btn-sec" id="cpbtn-tags" onclick="copyTags()">Tags kopieren</button>
       </div>
     </div>
+    <div id="auto-advance-3-done" class="info-box" style="display:none;margin-top:8px"></div>
     <div class="btn-row">
       <button class="btn-primary" onclick="goStep(4)">Weiter: Ausgabe &rarr;</button>
       <button class="btn-sec" onclick="resetAll()">Von vorne</button>
@@ -505,40 +491,45 @@ async function runStep2() {
 Schreibmodus: ${modus}. Modus: ${procMode === 'generieren' ? 'Neu generieren' : 'Ueberarbeiten'}. Kategorie: ${cat || 'nicht angegeben'}.
 SPRACHSTIL-GUIDE:
 ${T.sprachstil || '(nicht geladen)'}
-MENSCHLICHKEITS-REGELN:
-${T.menschlich || '(nicht geladen)'}
-Pruefe den Text. Markiere konkrete problematische Textstellen als fundstellen.
-Erstelle ausserdem einen vollstaendig verbesserten Text als verbesserter_text.
-Antworte NUR mit gueltigem JSON, keine Erklaerungen davor oder danach:
-{"gesamt":"ok|warn|fehler","gesamt_text":"","ton":"ok|warn|fehler","ton_text":"","ton_vorschlag":"","satzbau":"ok|warn|fehler","satzbau_text":"","satzbau_vorschlag":"","laenge":"ok|warn|fehler","laenge_text":"","laenge_vorschlag":"","fundstellen":[{"phrase":"exakter Satz oder Satzteil aus dem Text","typ":"warn|fehler","tipp":"konkreter Verbesserungshinweis"}],"verbesserter_text":"vollstaendig ueberarbeiteter Text"}`;
+
+AUFGABE: Analysiere den Text. Gib fuer jede Rubrik eine Bewertung.
+Fuer "fundstellen": Kopiere WORTWOERTLICH Saetze oder Satzteile aus dem Eingabetext.
+- typ "ok" = gelungene, mustergueltige Textstellen (tipp = was daran gut ist)
+- typ "warn" = verbesserungswuerdige Stellen (tipp = konkreter Vorschlag)
+- typ "fehler" = kritische Stellen, sachliche Fehler (tipp = was zu aendern ist)
+Mindestens 2-3 ok-Fundstellen, wenn Text gut ist.
+Erstelle auch einen vollstaendig verbesserten Text.
+Antworte NUR mit reinem JSON ohne Erklaerung:
+{"gesamt":"ok|warn|fehler","ton":"ok|warn|fehler","ton_text":"","ton_vorschlag":"","satzbau":"ok|warn|fehler","satzbau_text":"","satzbau_vorschlag":"","laenge":"ok|warn|fehler","laenge_text":"","laenge_vorschlag":"","fundstellen":[{"phrase":"EXAKTER Auszug aus dem Text","typ":"ok|warn|fehler","tipp":"Hinweis"}],"verbesserter_text":"vollstaendig ueberarbeiteter Text"}`;
 
   const sysMenschlich = `Du bist Redaktionsassistent der AVV. Schreibmodus: ${modus}.
 MENSCHLICHKEITS-GUIDE:
 ${T.menschlich || '(nicht geladen)'}
-Muster 5+6 nur bei persoenlich/emotional pruefen. Alle 12 Muster zurueckgeben.
-Antworte NUR mit gueltigem JSON:
-{"anzahl_gefunden":0,"zusammenfassung":"","muster":[{"nr":1,"name":"","gefunden":false,"hinweis":"","vorschlag":""}]}`;
+
+AUFGABE: Pruefe den Text auf 12 KI-Sprachmuster. Muster 5+6 nur bei persoenlich/emotional.
+Fuer jedes gefundene Muster: Kopiere einen WORTWOERTLICHEN Satz oder Satzteil als "phrase".
+Fuer nicht gefundene Muster: "phrase" leer lassen, "vorschlag" LEER lassen.
+Antworte NUR mit reinem JSON:
+{"anzahl_gefunden":0,"zusammenfassung":"","muster":[{"nr":1,"name":"","gefunden":false,"hinweis":"","vorschlag":"","phrase":""}]}`;
 
   const [r1, r2] = await Promise.allSettled([
-    api(sysSprachstil, (cat ? 'Kategorie: ' + cat + '\n' : '') + 'Beitragstext:\n' + cachedText, 2500),
-    api(sysMenschlich, 'Schreibmodus: ' + modus + '\n\nBeitragstext:\n' + cachedText, 2000)
+    api(sysSprachstil, (cat ? 'Kategorie: ' + cat + '\n' : '') + 'Beitragstext:\n' + cachedText, 3000),
+    api(sysMenschlich, 'Schreibmodus: ' + modus + '\n\nBeitragstext:\n' + cachedText, 2500)
   ]);
 
   const errors = [];
+  let allFundstellen = [];
+
   if (r1.status === 'fulfilled') {
     const p = r1.value;
-    setBadge('badge-gesamt', p.gesamt); setHTML('text-gesamt', p.gesamt_text);
+    setBadge('badge-gesamt', p.gesamt);
     setBadge('badge-ton', p.ton); setHTML('text-ton', p.ton_text); showVsl('ton', p.ton_vorschlag);
     setBadge('badge-satzbau', p.satzbau); setHTML('text-satzbau', p.satzbau_text); showVsl('satzbau', p.satzbau_vorschlag);
     setBadge('badge-laenge', p.laenge); setHTML('text-laenge', p.laenge_text); showVsl('laenge', p.laenge_vorschlag);
-    // Annotierter Text
-    if (p.fundstellen || p.verbesserter_text) {
-      renderAnnotatedText(cachedText, p.fundstellen || [], p.gesamt || 'warn');
-      if (p.verbesserter_text) {
-        cachedVerbesserterText = p.verbesserter_text;
-        document.getElementById('btn-apply-vsl').style.display = 'inline-flex';
-      }
-      document.getElementById('annot-card').style.display = 'block';
+    if (Array.isArray(p.fundstellen)) allFundstellen = allFundstellen.concat(p.fundstellen);
+    if (p.verbesserter_text) {
+      cachedVerbesserterText = p.verbesserter_text;
+      document.getElementById('btn-apply-vsl').style.display = 'inline-flex';
     }
   } else { errors.push('Sprachstil: ' + r1.reason.message); }
 
@@ -546,55 +537,84 @@ Antworte NUR mit gueltigem JSON:
     const p = r2.value;
     const anz = p.anzahl_gefunden || 0;
     const bm = document.getElementById('badge-muster');
-    bm.textContent = anz + ' von 12 erkannt'; bm.className = 'badge ' + (anz === 0 ? 'badge-ok' : anz <= 3 ? 'badge-warn' : 'badge-err');
+    bm.textContent = anz + ' Muster erkannt'; bm.className = 'badge ' + (anz === 0 ? 'badge-ok' : anz <= 3 ? 'badge-warn' : 'badge-err');
     setHTML('text-muster-summary', p.zusammenfassung);
-    const list = document.getElementById('muster-list'); list.innerHTML = '';
+    // Muster-Fundstellen in Annotation einbauen
     (p.muster || []).forEach(m => {
-      const div = document.createElement('div'); div.className = 'muster-item ' + (m.gefunden ? 'gefunden' : '');
-      div.innerHTML = `<div class="muster-name">${m.nr}. ${m.name} <span style="font-size:10px;font-weight:400;color:${m.gefunden ? '#854F0B' : '#1D9E75'}">${m.gefunden ? 'Hinweis' : 'OK'}</span></div>`
-        + `<div class="muster-text">${m.hinweis || ''}</div>`
-        + (m.gefunden && m.vorschlag ? `<div class="muster-vsl"><span class="muster-vsl-lbl">Vorschlag</span>${m.vorschlag}</div>` : '');
-      list.appendChild(div);
+      if (m.gefunden && m.phrase && m.phrase.trim()) {
+        allFundstellen.push({phrase: m.phrase, typ: 'warn', tipp: m.name + (m.vorschlag ? ': ' + m.vorschlag : (m.hinweis ? ': ' + m.hinweis : ''))});
+      }
     });
   } else { errors.push('Menschlichkeit: ' + r2.reason.message); }
+
+  // Annotierten Text rendern
+  renderAnnotatedText(cachedText, allFundstellen);
 
   if (errors.length) { const el = document.getElementById('err-2'); el.textContent = '\u26a0 ' + errors.join(' | '); el.style.display = 'block'; }
   if (r1.status === 'fulfilled' || r2.status === 'fulfilled') {
     done.add(2); document.getElementById('step-btn-2').className = 'step-btn done';
-    const s3 = document.getElementById('step-btn-3'); s3.className = 'step-btn'; s3.onclick = () => goStep(3);
+    document.getElementById('step-btn-3').className = 'step-btn'; document.getElementById('step-btn-3').onclick = () => goStep(3);
     document.getElementById('panel-2').style.display = 'none'; document.getElementById('result-2').style.display = 'block';
+    // Auto-Advance zu Schritt 3
+    autoAdvance('auto-advance-2', () => { goStep(3); runStep3(); });
   }
   document.getElementById('btn-2').style.display = 'inline-flex'; document.getElementById('loading-2').style.display = 'none';
 }
 
 // Annotierter Text rendern
 function escH(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function renderAnnotatedText(text, fundstellen, gesamt) {
-  const borderColor = gesamt === 'fehler' ? '#E55353' : gesamt === 'warn' ? '#FAC775' : '#1D9E75';
-  const fs = [...fundstellen].filter(f => f && f.phrase).sort((a,b) => b.phrase.length - a.phrase.length);
-  // Segmente bilden
+function renderAnnotatedText(text, fundstellen) {
+  // Deduplizieren, längste zuerst (verhindert nested matches)
+  const seen = new Set();
+  const fs = [...fundstellen]
+    .filter(f => f && f.phrase && f.phrase.trim().length > 3)
+    .filter(f => { const k = f.phrase.trim(); if (seen.has(k)) return false; seen.add(k); return true; })
+    .sort((a,b) => b.phrase.length - a.phrase.length);
+
   let segs = [{text, typ:'neutral', tipp:''}];
   fs.forEach(f => {
+    const phrase = f.phrase.trim();
     const next = [];
     segs.forEach(seg => {
       if (seg.typ !== 'neutral') { next.push(seg); return; }
-      const idx = seg.text.indexOf(f.phrase);
+      // Robuste Suche: exakt, dann case-insensitive
+      let idx = seg.text.indexOf(phrase);
+      let matchedPhrase = phrase;
+      if (idx === -1) {
+        const lo = seg.text.toLowerCase(), ph = phrase.toLowerCase();
+        idx = lo.indexOf(ph);
+        if (idx !== -1) matchedPhrase = seg.text.slice(idx, idx + phrase.length);
+      }
       if (idx === -1) { next.push(seg); return; }
       if (idx > 0) next.push({text: seg.text.slice(0, idx), typ:'neutral', tipp:''});
-      next.push({text: f.phrase, typ: f.typ || 'warn', tipp: f.tipp || ''});
-      const rest = seg.text.slice(idx + f.phrase.length);
+      next.push({text: matchedPhrase, typ: f.typ || 'warn', tipp: f.tipp || ''});
+      const rest = seg.text.slice(idx + matchedPhrase.length);
       if (rest) next.push({text: rest, typ:'neutral', tipp:''});
     });
     segs = next;
   });
+
   const html = segs.map(seg => {
     const t = escH(seg.text).replace(/\n/g, '<br>');
     if (seg.typ === 'neutral') return t;
-    const cls = seg.typ === 'fehler' ? 'annot-err' : 'annot-warn';
+    const cls = seg.typ === 'fehler' ? 'annot-err' : seg.typ === 'ok' ? 'annot-ok' : 'annot-warn';
     return `<span class="annot ${cls}"><span class="tip">${escH(seg.tipp)}</span>${t}</span>`;
   }).join('');
-  document.getElementById('annot-box').innerHTML =
-    `<div class="annot-text-box" style="border-color:${borderColor}">${html}</div>`;
+  document.getElementById('annot-box').innerHTML = html || escH(text).replace(/\n/g,'<br>');
+}
+
+// Auto-Advance mit 4-Sekunden-Countdown
+function autoAdvance(boxId, fn) {
+  const box = document.getElementById(boxId);
+  if (!box) { fn(); return; }
+  let sec = 4;
+  box.style.display = 'block';
+  box.textContent = 'Weiter in ' + sec + ' Sekunden \u2014 oder Button dr\u00fccken.';
+  const t = setInterval(() => {
+    sec--;
+    if (sec <= 0) { clearInterval(t); box.style.display = 'none'; fn(); }
+    else box.textContent = 'Weiter in ' + sec + ' Sekunden \u2014 oder Button dr\u00fccken.';
+  }, 1000);
 }
 
 function applyVorschlag() {
@@ -650,6 +670,8 @@ Antworte NUR mit gueltigem JSON:
     updTagSel(); done.add(3); document.getElementById('step-btn-3').className = 'step-btn done';
     const s4 = document.getElementById('step-btn-4'); s4.className = 'step-btn'; s4.onclick = () => goStep(4);
     document.getElementById('panel-3').style.display = 'none'; document.getElementById('result-3').style.display = 'block';
+    // Auto-Advance zu Schritt 4
+    autoAdvance('auto-advance-3-done', () => goStep(4));
   } catch(e) { const el = document.getElementById('err-3'); el.textContent = '\u26a0 ' + e.message; el.style.display = 'block'; }
   document.getElementById('btn-3').style.display = 'inline-flex'; document.getElementById('loading-3').style.display = 'none';
 }
