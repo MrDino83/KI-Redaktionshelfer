@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AVV Beitragscheck</title>
+<title>AVV Redaktionsassistent</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,sans-serif;font-size:13px;background:#f5f4f0;color:#2C2C2A;min-height:100vh}
@@ -114,7 +114,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
 <div id="lock-screen">
   <div class="lock-card">
     <div class="lock-icon">&#128274;</div>
-    <div class="lock-title">AVV Beitragscheck</div>
+    <div class="lock-title">AVV Redaktionsassistent</div>
     <div class="lock-sub">Redaktionswerkzeug f&uuml;r hoher-list.de<br>Nur f&uuml;r das AVV-Redaktionsteam.</div>
     <input class="lock-input" type="password" id="lock-pw" placeholder="Passwort" onkeydown="if(event.key==='Enter')unlock()">
     <div class="lock-err" id="lock-err"></div>
@@ -125,7 +125,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
 
 <div class="wrap" id="main-app" style="display:none">
   <div class="logo-row"><div class="dot"></div><span class="logo-text">AVV Hoher List &middot; &Ouml;ffentlichkeitsarbeit</span></div>
-  <h1>Beitragscheck</h1>
+  <h1>Redaktionsassistent</h1>
   <div class="tagline">Sprachstil &middot; Menschlichkeit &middot; Tags &middot; Medienformate &mdash; Wizard v2.0</div>
 
   <div class="api-bar">
@@ -136,10 +136,9 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
 
   <div class="steps">
     <button class="step-btn active" id="step-btn-1" onclick="goStep(1)"><span class="step-num">01</span><span class="step-name">Eingabe</span></button>
-    <button class="step-btn locked" id="step-btn-2"><span class="step-num">02</span><span class="step-name">Sprachstil</span></button>
-    <button class="step-btn locked" id="step-btn-3"><span class="step-num">03</span><span class="step-name">Menschlichkeit</span></button>
-    <button class="step-btn locked" id="step-btn-4"><span class="step-num">04</span><span class="step-name">Tags</span></button>
-    <button class="step-btn locked" id="step-btn-5"><span class="step-num">05</span><span class="step-name">Medien</span></button>
+    <button class="step-btn locked" id="step-btn-2"><span class="step-num">02</span><span class="step-name">Sprache &amp; Stil</span></button>
+    <button class="step-btn locked" id="step-btn-3"><span class="step-num">03</span><span class="step-name">Tags</span></button>
+    <button class="step-btn locked" id="step-btn-4"><span class="step-num">04</span><span class="step-name">Medien</span></button>
   </div>
 
   <!-- PANEL 1: Eingabe & Optionen -->
@@ -207,11 +206,11 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
     </div>
   </div>
 
-  <!-- PANEL 2: Sprachstil -->
+  <!-- PANEL 2: Sprache & Stil + Menschlichkeit -->
   <div id="panel-2" style="display:none">
     <div class="btn-row">
-      <button class="btn-primary" id="btn-2" onclick="runStep2()">Sprachstil pr&uuml;fen &rarr;</button>
-      <span id="loading-2" style="display:none" class="loading"><div class="spinner"></div>Analysiere Sprachstil&hellip;</span>
+      <button class="btn-primary" id="btn-2" onclick="runStep2()">Sprache &amp; Stil pr&uuml;fen &rarr;</button>
+      <span id="loading-2" style="display:none" class="loading"><div class="spinner"></div>Analysiere Sprache, Stil &amp; Menschlichkeit&hellip;</span>
     </div>
     <div id="err-2" style="display:none;margin-top:8px" class="err-box"></div>
   </div>
@@ -246,23 +245,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
         </div>
       </div>
     </div>
-    <div class="btn-row">
-      <button class="btn-primary" onclick="goStep(3)">Weiter: Menschlichkeit &rarr;</button>
-      <button class="btn-sec" onclick="resetAll()">Von vorne</button>
-    </div>
-  </div>
-
-  <!-- PANEL 3: Menschlichkeit -->
-  <div id="panel-3" style="display:none">
-    <div class="info-box">12 KI-Sprachmuster werden gepr&uuml;ft. Gefundene Muster erhalten direkt darunter einen konkreten Verbesserungsvorschlag.</div>
-    <div class="btn-row">
-      <button class="btn-primary" id="btn-3" onclick="runStep3()">Menschlichkeit pr&uuml;fen &rarr;</button>
-      <span id="loading-3" style="display:none" class="loading"><div class="spinner"></div>Analysiere 12 Sprachmuster&hellip;</span>
-    </div>
-    <div id="err-3" style="display:none;margin-top:8px" class="err-box"></div>
-  </div>
-  <div id="result-3" style="display:none">
-    <div class="result-card">
+    <div class="result-card" style="margin-top:10px">
       <div class="r-section">
         <div class="r-title">KI-Muster-Check <span class="badge" id="badge-muster"></span></div>
         <div class="r-text" id="text-muster-summary"></div>
@@ -270,20 +253,20 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
       <div id="muster-list"></div>
     </div>
     <div class="btn-row">
-      <button class="btn-primary" onclick="goStep(4)">Weiter: Tags &rarr;</button>
+      <button class="btn-primary" onclick="goStep(3)">Weiter: Tags &rarr;</button>
       <button class="btn-sec" onclick="resetAll()">Von vorne</button>
     </div>
   </div>
 
-  <!-- PANEL 4: Tags -->
-  <div id="panel-4" style="display:none">
+  <!-- PANEL 3: Tags -->
+  <div id="panel-3" style="display:none">
     <div class="btn-row">
-      <button class="btn-primary" id="btn-4" onclick="runStep4()">Tags analysieren &rarr;</button>
-      <span id="loading-4" style="display:none" class="loading"><div class="spinner"></div>Taxonomie v0.3 wird angewendet&hellip;</span>
+      <button class="btn-primary" id="btn-3" onclick="runStep3()">Tags analysieren &rarr;</button>
+      <span id="loading-3" style="display:none" class="loading"><div class="spinner"></div>Taxonomie v0.3 wird angewendet&hellip;</span>
     </div>
-    <div id="err-4" style="display:none;margin-top:8px" class="err-box"></div>
+    <div id="err-3" style="display:none;margin-top:8px" class="err-box"></div>
   </div>
-  <div id="result-4" style="display:none">
+  <div id="result-3" style="display:none">
     <div class="result-card">
       <div class="r-title" style="margin-bottom:10px">Tag-Vorschl&auml;ge &middot; Taxonomie v0.3</div>
       <div id="tag-info" class="r-text" style="margin-bottom:10px"></div>
@@ -298,22 +281,22 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
       </div>
     </div>
     <div class="btn-row">
-      <button class="btn-primary" id="btn-to-media" onclick="goStep(5)" style="display:none">Weiter: Medienformate &rarr;</button>
+      <button class="btn-primary" id="btn-to-media" onclick="goStep(4)" style="display:none">Weiter: Medienformate &rarr;</button>
       <button class="btn-primary" id="btn-finish" onclick="resetAll()" style="display:none">Neuer Beitrag</button>
       <button class="btn-sec" onclick="resetAll()">Von vorne</button>
     </div>
   </div>
 
-  <!-- PANEL 5: Medienformate -->
-  <div id="panel-5" style="display:none">
+  <!-- PANEL 4: Medienformate -->
+  <div id="panel-4" style="display:none">
     <div class="info-box" id="media-info">Texte werden f&uuml;r die ausgew&auml;hlten Medienformate generiert.</div>
     <div class="btn-row">
-      <button class="btn-primary" id="btn-5" onclick="runStep5()">Medientexte generieren &rarr;</button>
-      <span id="loading-5" style="display:none" class="loading"><div class="spinner"></div>Generiere Medienformate&hellip;</span>
+      <button class="btn-primary" id="btn-4" onclick="runStep4()">Medientexte generieren &rarr;</button>
+      <span id="loading-4" style="display:none" class="loading"><div class="spinner"></div>Generiere Medienformate&hellip;</span>
     </div>
-    <div id="err-5" style="display:none;margin-top:8px" class="err-box"></div>
+    <div id="err-4" style="display:none;margin-top:8px" class="err-box"></div>
   </div>
-  <div id="result-5" style="display:none">
+  <div id="result-4" style="display:none">
     <div id="media-results"></div>
     <div class="btn-row"><button class="btn-sec" onclick="resetAll()">Neuer Beitrag</button></div>
   </div>
@@ -410,11 +393,11 @@ function updateCb(k) {
   else             { selMedia.delete(k); lbl.classList.remove('active'); }
 }
 function goStep(n) {
-  if (n > 1 && !done.has(n - 1)) return;
-  [1,2,3,4,5].forEach(i => {
+  if (n > 1 && !done.has(n - 1) && !done.has(n)) return;
+  [1,2,3,4].forEach(i => {
     const sb = document.getElementById('step-btn-' + i);
     sb.className = 'step-btn' + (i === n ? ' active' : done.has(i) ? ' done' : ' locked');
-    sb.onclick = (i <= n && (i === 1 || done.has(i - 1))) ? () => goStep(i) : null;
+    sb.onclick = (i === 1 || done.has(i) || done.has(i - 1)) ? () => goStep(i) : null;
     document.getElementById('panel-' + i).style.display = 'none';
     const r = document.getElementById('result-' + i); if (r) r.style.display = 'none';
   });
@@ -455,7 +438,12 @@ async function api(sys, usr, max = 1500) {
     }
     if (end !== -1) raw = raw.slice(start, end + 1);
   }
-  return JSON.parse(raw);
+  try { return JSON.parse(raw); } catch(e) {
+    const fixed = raw.replace(/"(?:[^"\\]|\\.)*"/g, m =>
+      m.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t')
+    );
+    return JSON.parse(fixed);
+  }
 }
 
 function startWizard() {
@@ -470,39 +458,33 @@ async function runStep2() {
   document.getElementById('btn-2').style.display = 'none';
   document.getElementById('loading-2').style.display = 'flex';
   const cat = document.getElementById('cat').value, modus = document.getElementById('modus').value;
-  const sys = `Du bist Redaktionsassistent der AVV.
+  const sysSprachstil = `Du bist Redaktionsassistent der AVV.
 Schreibmodus: ${modus}. Modus: ${procMode === 'generieren' ? 'Neu generieren' : 'Ueberarbeiten'}. Kategorie: ${cat || 'nicht angegeben'}.
 SPRACHSTIL-GUIDE:\n${T.sprachstil || '(nicht geladen)'}
 MENSCHLICHKEITS-REGELN (beim Formulieren von Vorschlaegen aktiv anwenden):\n${T.menschlich || '(nicht geladen)'}
 Pruefe den Text. Gib fuer jede Rubrik Bewertung + konkreten Verbesserungsvorschlag direkt darunter.
 JSON ohne Backticks:
 {"gesamt":"ok|warn|fehler","gesamt_text":"","ton":"ok|warn|fehler","ton_text":"","ton_vorschlag":"","satzbau":"ok|warn|fehler","satzbau_text":"","satzbau_vorschlag":"","laenge":"ok|warn|fehler","laenge_text":"","laenge_vorschlag":""}`;
-  try {
-    const p = await api(sys, (cat ? 'Kategorie: ' + cat + '\n' : '') + 'Beitragstext:\n' + cachedText);
-    setBadge('badge-gesamt', p.gesamt); setHTML('text-gesamt', p.gesamt_text);
-    setBadge('badge-ton', p.ton); setHTML('text-ton', p.ton_text); showVsl('ton', p.ton_vorschlag);
-    setBadge('badge-satzbau', p.satzbau); setHTML('text-satzbau', p.satzbau_text); showVsl('satzbau', p.satzbau_vorschlag);
-    setBadge('badge-laenge', p.laenge); setHTML('text-laenge', p.laenge_text); showVsl('laenge', p.laenge_vorschlag);
-    done.add(2); document.getElementById('step-btn-2').className = 'step-btn done';
-    const s3 = document.getElementById('step-btn-3'); s3.className = 'step-btn'; s3.onclick = () => goStep(3);
-    document.getElementById('panel-2').style.display = 'none'; document.getElementById('result-2').style.display = 'block';
-  } catch(e) { const el = document.getElementById('err-2'); el.textContent = '\u26a0 ' + e.message; el.style.display = 'block'; }
-  document.getElementById('btn-2').style.display = 'inline-flex'; document.getElementById('loading-2').style.display = 'none';
-}
-
-async function runStep3() {
-  document.getElementById('err-3').style.display = 'none';
-  document.getElementById('btn-3').style.display = 'none';
-  document.getElementById('loading-3').style.display = 'flex';
-  const modus = document.getElementById('modus').value;
-  const sys = `Du bist Redaktionsassistent der AVV. Schreibmodus: ${modus}.
+  const sysMenschlich = `Du bist Redaktionsassistent der AVV. Schreibmodus: ${modus}.
 MENSCHLICHKEITS-GUIDE (nicht nur pruefen — beim Schreiben aller Vorschlaege aktiv anwenden):
 ${T.menschlich || '(nicht geladen)'}
 Muster 5+6 nur bei persoenlich/emotional pruefen. Alle 12 Muster zurueckgeben.
 JSON ohne Backticks:
 {"anzahl_gefunden":0,"zusammenfassung":"","muster":[{"nr":1,"name":"...","gefunden":false,"hinweis":"","vorschlag":""}]}`;
-  try {
-    const p = await api(sys, 'Schreibmodus: ' + modus + '\n\nBeitragstext:\n' + cachedText, 2000);
+  const [r1, r2] = await Promise.allSettled([
+    api(sysSprachstil, (cat ? 'Kategorie: ' + cat + '\n' : '') + 'Beitragstext:\n' + cachedText),
+    api(sysMenschlich, 'Schreibmodus: ' + modus + '\n\nBeitragstext:\n' + cachedText, 2000)
+  ]);
+  const errors = [];
+  if (r1.status === 'fulfilled') {
+    const p = r1.value;
+    setBadge('badge-gesamt', p.gesamt); setHTML('text-gesamt', p.gesamt_text);
+    setBadge('badge-ton', p.ton); setHTML('text-ton', p.ton_text); showVsl('ton', p.ton_vorschlag);
+    setBadge('badge-satzbau', p.satzbau); setHTML('text-satzbau', p.satzbau_text); showVsl('satzbau', p.satzbau_vorschlag);
+    setBadge('badge-laenge', p.laenge); setHTML('text-laenge', p.laenge_text); showVsl('laenge', p.laenge_vorschlag);
+  } else { errors.push('Sprachstil: ' + r1.reason.message); }
+  if (r2.status === 'fulfilled') {
+    const p = r2.value;
     const anz = p.anzahl_gefunden || 0;
     const bm = document.getElementById('badge-muster');
     bm.textContent = anz + ' von 12 erkannt'; bm.className = 'badge ' + (anz === 0 ? 'badge-ok' : anz <= 3 ? 'badge-warn' : 'badge-err');
@@ -515,11 +497,14 @@ JSON ohne Backticks:
         + (m.gefunden && m.vorschlag ? `<div class="muster-vsl"><span class="muster-vsl-lbl">Vorschlag</span>${m.vorschlag}</div>` : '');
       list.appendChild(div);
     });
-    done.add(3); document.getElementById('step-btn-3').className = 'step-btn done';
-    const s4 = document.getElementById('step-btn-4'); s4.className = 'step-btn'; s4.onclick = () => goStep(4);
-    document.getElementById('panel-3').style.display = 'none'; document.getElementById('result-3').style.display = 'block';
-  } catch(e) { const el = document.getElementById('err-3'); el.textContent = '\u26a0 ' + e.message; el.style.display = 'block'; }
-  document.getElementById('btn-3').style.display = 'inline-flex'; document.getElementById('loading-3').style.display = 'none';
+  } else { errors.push('Menschlichkeit: ' + r2.reason.message); }
+  if (errors.length) { const el = document.getElementById('err-2'); el.textContent = '\u26a0 ' + errors.join(' | '); el.style.display = 'block'; }
+  if (r1.status === 'fulfilled' || r2.status === 'fulfilled') {
+    done.add(2); document.getElementById('step-btn-2').className = 'step-btn done';
+    const s3 = document.getElementById('step-btn-3'); s3.className = 'step-btn'; s3.onclick = () => goStep(3);
+    document.getElementById('panel-2').style.display = 'none'; document.getElementById('result-2').style.display = 'block';
+  }
+  document.getElementById('btn-2').style.display = 'inline-flex'; document.getElementById('loading-2').style.display = 'none';
 }
 
 const TAG_GRP = [
@@ -529,10 +514,10 @@ const TAG_GRP = [
   {k:'Verein_Ort',l:'Verein,\u00a0Ort\u00a0&\u00a0Veranstaltungen'},{k:'Zielgruppe',l:'Zielgruppe'},
   {k:'Personen',l:'Personen'},{k:'Neu',l:'Neue\u00a0Vorschl\u00e4ge',neu:true},
 ];
-async function runStep4() {
-  document.getElementById('err-4').style.display = 'none';
-  document.getElementById('btn-4').style.display = 'none';
-  document.getElementById('loading-4').style.display = 'flex';
+async function runStep3() {
+  document.getElementById('err-3').style.display = 'none';
+  document.getElementById('btn-3').style.display = 'none';
+  document.getElementById('loading-3').style.display = 'flex';
   const cat = document.getElementById('cat').value;
   const sys = `Du bist Verschlagwortungs-Assistent fuer hoher-list.de (AVV).
 TAG-TAXONOMIE:\n${T.tags || '(nicht geladen)'}
@@ -554,18 +539,18 @@ JSON ohne Backticks:
         div.querySelector('#tg_' + grp.k).appendChild(el);
       });
     });
-    updTagSel(); done.add(4); document.getElementById('step-btn-4').className = 'step-btn done';
+    updTagSel(); done.add(3); document.getElementById('step-btn-3').className = 'step-btn done';
     if (selMedia.size > 0) {
-      const s5 = document.getElementById('step-btn-5'); s5.className = 'step-btn'; s5.onclick = () => goStep(5);
+      const s4 = document.getElementById('step-btn-4'); s4.className = 'step-btn'; s4.onclick = () => goStep(4);
       document.getElementById('btn-to-media').style.display = 'inline-flex';
       document.getElementById('btn-finish').style.display = 'none';
     } else {
       document.getElementById('btn-to-media').style.display = 'none';
       document.getElementById('btn-finish').style.display = 'inline-flex';
     }
-    document.getElementById('panel-4').style.display = 'none'; document.getElementById('result-4').style.display = 'block';
-  } catch(e) { const el = document.getElementById('err-4'); el.textContent = '\u26a0 ' + e.message; el.style.display = 'block'; }
-  document.getElementById('btn-4').style.display = 'inline-flex'; document.getElementById('loading-4').style.display = 'none';
+    document.getElementById('panel-3').style.display = 'none'; document.getElementById('result-3').style.display = 'block';
+  } catch(e) { const el = document.getElementById('err-3'); el.textContent = '\u26a0 ' + e.message; el.style.display = 'block'; }
+  document.getElementById('btn-3').style.display = 'inline-flex'; document.getElementById('loading-3').style.display = 'none';
 }
 function togTag(t, el) {
   if (tagSel.has(t)) { tagSel.delete(t); el.className = 'tag'; el.textContent = t + ' +'; }
@@ -600,13 +585,13 @@ const MEDIA_CFG = {
   mastodon: { label: 'Mastodon',         color: '#6364FF', tkey: 'mastodon' },
   presse:   { label: 'Pressemitteilung', color: '#5F5E5A', tkey: 'presse' },
 };
-async function runStep5() {
+async function runStep4() {
   const mList = [...selMedia].filter(m => MEDIA_CFG[m]);
-  if (!mList.length) { done.add(5); document.getElementById('panel-5').style.display = 'none'; document.getElementById('result-5').style.display = 'block'; return; }
+  if (!mList.length) { done.add(4); document.getElementById('panel-4').style.display = 'none'; document.getElementById('result-4').style.display = 'block'; return; }
   document.getElementById('media-info').textContent = 'Generiere f\u00fcr: ' + mList.map(m => MEDIA_CFG[m].label).join(', ');
-  document.getElementById('err-5').style.display = 'none';
-  document.getElementById('btn-5').style.display = 'none';
-  document.getElementById('loading-5').style.display = 'flex';
+  document.getElementById('err-4').style.display = 'none';
+  document.getElementById('btn-4').style.display = 'none';
+  document.getElementById('loading-4').style.display = 'flex';
   const modus = document.getElementById('modus').value, cat = document.getElementById('cat').value;
   const res = document.getElementById('media-results'); res.innerHTML = '';
   await Promise.allSettled(mList.map(async mk => {
@@ -623,9 +608,9 @@ JSON ohne Backticks: {"text":"Text mit \\n fuer Zeilenumbrueche","hinweis":"1 ku
       addMedia(res, cfg, mk, p.text || '', p.hinweis || '');
     } catch(e) { addMedia(res, cfg, mk, 'Fehler: ' + e.message, ''); }
   }));
-  done.add(5); document.getElementById('step-btn-5').className = 'step-btn done';
-  document.getElementById('panel-5').style.display = 'none'; document.getElementById('result-5').style.display = 'block';
-  document.getElementById('btn-5').style.display = 'inline-flex'; document.getElementById('loading-5').style.display = 'none';
+  done.add(4); document.getElementById('step-btn-4').className = 'step-btn done';
+  document.getElementById('panel-4').style.display = 'none'; document.getElementById('result-4').style.display = 'block';
+  document.getElementById('btn-4').style.display = 'inline-flex'; document.getElementById('loading-4').style.display = 'none';
 }
 function addMedia(container, cfg, key, text, hint) {
   const div = document.createElement('div'); div.className = 'media-block';
@@ -647,14 +632,14 @@ function resetAll() {
   ['website','instagram','facebook','bluesky','mastodon','presse'].forEach(k => {
     document.getElementById('chk-' + k).checked = false; document.getElementById('cb-' + k).classList.remove('active');
   });
-  [1,2,3,4,5].forEach(i => {
+  [1,2,3,4].forEach(i => {
     const p = document.getElementById('panel-' + i); if (p) p.style.display = i === 1 ? 'block' : 'none';
     const r = document.getElementById('result-' + i); if (r) r.style.display = 'none';
     const e = document.getElementById('err-' + i); if (e) e.style.display = 'none';
     const b = document.getElementById('btn-' + i); if (b) b.style.display = 'inline-flex';
     const l = document.getElementById('loading-' + i); if (l) l.style.display = 'none';
   });
-  [1,2,3,4,5].forEach(i => {
+  [1,2,3,4].forEach(i => {
     const sb = document.getElementById('step-btn-' + i);
     sb.className = 'step-btn' + (i === 1 ? ' active' : ' locked');
     sb.onclick = i === 1 ? () => goStep(1) : null;
