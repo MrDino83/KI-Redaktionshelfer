@@ -120,10 +120,14 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
 .annot-err{background:#FCEBEB;border-bottom:2px solid #E55353}
 .annot-ok{background:#E1F5EE;border-bottom:2px solid #1D9E75}
 /* Tooltip popup */
-.annot .tip{display:none;position:absolute;bottom:calc(100% + 6px);left:0;z-index:300;background:#2C2C2A;color:#fff;font-size:11px;padding:8px 10px;border-radius:7px;min-width:200px;max-width:320px;line-height:1.5;white-space:normal;pointer-events:auto;box-shadow:0 4px 16px rgba(0,0,0,.25);cursor:default}
+.annot{cursor:pointer}
+.annot .tip{display:none;position:absolute;bottom:calc(100% + 2px);left:0;z-index:300;background:#2C2C2A;color:#fff;font-size:11px;padding:10px 12px;border-radius:7px;min-width:220px;max-width:340px;line-height:1.55;white-space:normal;pointer-events:auto;box-shadow:0 4px 16px rgba(0,0,0,.3);cursor:default}
+/* Unsichtbare Bruecke verhindert Luecke beim Mausbewegen */
+.annot .tip::after{content:'';position:absolute;top:100%;left:0;width:100%;height:8px}
 .annot:hover .tip,.annot .tip:hover{display:block}
-.tip-text{margin-bottom:6px}
-.tip-btn{display:inline-block;margin-top:4px;padding:3px 9px;background:#1D9E75;color:#fff;border:none;border-radius:5px;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit}
+.tip-tipp{font-size:11px;margin-bottom:6px;line-height:1.5}
+.tip-vorschlag{font-size:11px;background:rgba(255,255,255,.12);border-radius:4px;padding:5px 7px;margin-bottom:7px;font-style:italic;line-height:1.5}
+.tip-btn{display:inline-block;padding:4px 10px;background:#1D9E75;color:#fff;border:none;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
 .tip-btn:hover{background:#169E6A}
 .annot-legend{display:flex;gap:12px;font-size:11px;color:#888780;margin-top:8px;flex-wrap:wrap}
 .annot-legend span{display:flex;align-items:center;gap:4px}
@@ -147,7 +151,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
 <div class="wrap" id="main-app" style="display:none">
   <div class="logo-row"><div class="dot"></div><span class="logo-text">AVV Hoher List &middot; &Ouml;ffentlichkeitsarbeit</span></div>
   <h1>Redaktionsassistent</h1>
-  <div class="tagline">Sprachstil &middot; Menschlichkeit &middot; Tags &middot; Ausgabe &mdash; Wizard v2.1</div>
+  <div class="tagline">Sprachstil &middot; Menschlichkeit &middot; Tags &middot; Ausgabe &mdash; Wizard v2.2</div>
 
   <div class="api-bar">
     <span style="flex-shrink:0;font-weight:500">API-Key:</span>
@@ -498,9 +502,10 @@ Fuer "fundstellen": Kopiere WORTWOERTLICH Saetze oder Satzteile aus dem Eingabet
 - typ "warn" = Verbesserung moeglich (tipp = kurzer Hinweis, vorschlag = verbesserter Ersatztext)
 - typ "fehler" = kritisch oder sachlich falsch (tipp = kurzer Hinweis, vorschlag = Ersatztext)
 Mindestens 2 ok-Fundstellen einbauen. Maximal 8 Fundstellen gesamt.
-Bewertungen "ton", "satzbau", "laenge" jeweils als 1 kurzer Satz in "_text".
+Bewertungen "ton", "satzbau", "laenge" jeweils als 1 kurzer Satz.
+WICHTIG: Fuelle zuerst die Bewertungsfelder, dann fundstellen, dann verbesserter_text.
 Antworte NUR mit reinem JSON:
-{"gesamt":"ok|warn|fehler","ton":"ok|warn|fehler","ton_text":"1 Satz","satzbau":"ok|warn|fehler","satzbau_text":"1 Satz","laenge":"ok|warn|fehler","laenge_text":"1 Satz","fundstellen":[{"phrase":"EXAKTER Auszug","typ":"ok|warn|fehler","tipp":"kurzer Hinweis","vorschlag":"Ersatztext oder leer"}],"verbesserter_text":"vollstaendig ueberarbeiteter Text"}`;
+{"gesamt":"ok|warn|fehler","ton":"ok|warn|fehler","ton_text":"1 Satz Bewertung","satzbau":"ok|warn|fehler","satzbau_text":"1 Satz Bewertung","laenge":"ok|warn|fehler","laenge_text":"1 Satz Bewertung","fundstellen":[{"phrase":"EXAKTER Auszug aus dem Text","typ":"ok|warn|fehler","tipp":"Erklaerung was gut ist oder was verbessert werden soll","vorschlag":"bei warn/fehler: konkreter Alternativtext fuer diese Stelle, sonst leer lassen"}],"verbesserter_text":"vollstaendig ueberarbeiteter Text"}`;
 
   const sysMenschlich = `Du bist Redaktionsassistent der AVV. Schreibmodus: ${modus}.
 MENSCHLICHKEITS-GUIDE:
@@ -598,12 +603,14 @@ function renderAnnotatedText(text, fundstellen) {
     const t = escH(seg.text).replace(/\n/g, '<br>');
     if (seg.typ === 'neutral') return t;
     const cls = seg.typ === 'fehler' ? 'annot-err' : seg.typ === 'ok' ? 'annot-ok' : 'annot-warn';
-    // Übernehmen-Button nur wenn kein ok und ein Vorschlag vorhanden (oder warn/fehler)
-    const hasBtn = seg.typ !== 'ok' && seg.vorschlag;
-    const btn = hasBtn
-      ? `<button class="tip-btn" onmousedown="event.preventDefault();applySegment(${i})">&#10003; &Uuml;bernehmen</button>`
-      : '';
-    return `<span class="annot ${cls}" data-seg="${i}"><span class="tip"><span class="tip-text">${escH(seg.tipp)}</span>${btn}</span>${t}</span>`;
+    let tipHtml = `<div class="tip-tipp">${escH(seg.tipp)}</div>`;
+    if (seg.typ !== 'ok') {
+      if (seg.vorschlag) {
+        tipHtml += `<div class="tip-vorschlag">&#8618; ${escH(seg.vorschlag)}</div>`;
+      }
+      tipHtml += `<button class="tip-btn" onmousedown="event.preventDefault();applySegment(${i})">&#10003; &Uuml;bernehmen</button>`;
+    }
+    return `<span class="annot ${cls}" data-seg="${i}"><span class="tip">${tipHtml}</span>${t}</span>`;
   }).join('');
   document.getElementById('annot-box').innerHTML = html || escH(text).replace(/\n/g,'<br>');
 }
