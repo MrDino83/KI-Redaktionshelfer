@@ -490,12 +490,40 @@ function onCatChange() {
   document.getElementById('txt-card').style.display = isAstrofoto ? 'none' : 'block';
 }
 
+async function fetchViaProxy(url) {
+  // Mehrere Proxies nacheinander probieren
+  const proxies = [
+    async u => {
+      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(u));
+      if (!r.ok) throw new Error(r.status);
+      const j = await r.json();
+      if (!j.contents) throw new Error('leer');
+      return j.contents;
+    },
+    async u => {
+      const r = await fetch('https://corsproxy.org/?' + encodeURIComponent(u));
+      if (!r.ok) throw new Error(r.status);
+      return r.text();
+    },
+    async u => {
+      const r = await fetch('https://thingproxy.freeboard.io/fetch/' + u);
+      if (!r.ok) throw new Error(r.status);
+      return r.text();
+    }
+  ];
+  for (const proxy of proxies) {
+    try { return await proxy(url); } catch(e) { /* naechsten versuchen */ }
+  }
+  throw new Error('Alle Proxies fehlgeschlagen. Bitte URL prüfen oder später erneut versuchen.');
+}
+
 async function generateAstrofotoText(url) {
-  // Seite via Proxy laden
-  const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
-  const resp = await fetch(proxyUrl);
-  if (!resp.ok) throw new Error('Seite konnte nicht geladen werden (HTTP ' + resp.status + ')');
-  const html = await resp.text();
+  document.getElementById('loading-1').querySelector('div + *') || null;
+  const loadingEl = document.getElementById('loading-1');
+
+  // Seite laden
+  loadingEl.innerHTML = '<div class="spinner"></div>Lade AstroBin-Seite\u2026';
+  const html = await fetchViaProxy(url);
 
   // HTML parsen und relevante Inhalte extrahieren
   const parser = new DOMParser();
@@ -514,6 +542,7 @@ async function generateAstrofotoText(url) {
   ].filter(Boolean).join('\n\n');
 
   // Claude generiert den Beitrag
+  loadingEl.innerHTML = '<div class="spinner"></div>Generiere Beitragstext\u2026';
   const key = document.getElementById('apikey').value.trim();
   if (!key) throw new Error('Bitte API-Key eingeben.');
 
