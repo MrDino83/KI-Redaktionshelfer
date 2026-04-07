@@ -1,7 +1,7 @@
 # AVV Beitragscheck — Baustein 2: Menschliche Sprache
 **Astronomische Vereinigung Vulkaneifel am Hohen List e.V.**
 *Trainingsdokument: KI-Sprachmuster erkennen und vermeiden*
-*Version 0.1 — Basis: trainingslogik_menschliche_sprache_aktualisiert_MQ.json v1.6*
+*Version 0.1 — Basis: Trainingslogik Menschliche Sprache v1.6*
 
 ---
 
@@ -175,6 +175,6 @@ Der Beitragscheck analysiert einen Text auf diese 12 Muster. Für jedes erkannte
 
 ---
 
-*Quelle: trainingslogik_menschliche_sprache_aktualisiert_MQ.json v1.6 (Marcus Mattlener / ChatGPT), adaptiert für AVV-Beitragscheck*
+*Quelle: Trainingslogik Menschliche Sprache v1.6 (Marcus Mattlener / ChatGPT), adaptiert für AVV-Beitragscheck*
 *Datei: AVV_Beitragscheck_MenschlicheSprache.md*
 *Ablageort: KI-Redaktionshelfer*
