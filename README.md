@@ -84,7 +84,7 @@ Die 12 Muster im Überblick:
 
 Wichtig: Muster 5 und 6 gelten nur im Modus *persönlich* oder *emotional* — nicht in sachlichen oder technischen Beiträgen.
 
-Quelle: trainingslogik_menschliche_sprache_aktualisiert_MQ.json v1.6 (Marcus Mattlener / ChatGPT), adaptiert für AVV
+Quelle: Trainingslogik „Menschliche Sprache“, adaptiert für AVV
 
 ---
 
@@ -102,22 +102,6 @@ Definiert die Verschlagwortungslogik für WordPress in sechs Gruppen:
 | 6 — Verein, Veranstaltungen & Ort | Hoher List, AVV, Vulkaneifel, Sternenpark etc. |
 
 Grundregel: 3–7 Tags pro Beitrag. Katalogbezeichnungen im Format `M 42`, `NGC 224`, `IC 434`.
-
----
-
-## Steuerungslogik (MQ) — nur für Claude-Projektnutzung
-
-Die MQ-Logik steuert, wie Claude Texte generiert und überarbeitet. Sie ist ausschließlich für die Arbeit im Claude-Projektkontext gedacht und erscheint nicht in den Autorentrainingsdateien.
-
-| Parameter | Funktion | Standardwert |
-|---|---|---|
-| MQ 1 — Sprachstil | `s` (sachlich) / `t` (technisch) / `p` (persönlich) / `e` (emotional) | `s` |
-| MQ 2 — Regelverletzungsgrad | Skala 1–10: Wie stark werden KI-Muster gebrochen? | `5` |
-| MQ 3 — SEO-Optimierung | `j` / `n` | `n` |
-
-Kurzform im Prompt: z.B. `p, 7` = Modus persönlich, Verletzungsgrad 7.
-MQ-Suffix: Endet ein Prompt mit `MQ`, ist menschliche Sprache automatisch aktiv — keine Abfrage nötig.
-Kombinationen: Mehrere Modi kommasepariert möglich, z.B. `t, s`.
 
 ---
 
@@ -152,8 +136,9 @@ Unabhängig von Modus und Einstellungen gilt:
 
 | Version | Datum | Änderung |
 |---|---|---|
-| 0.1 | April 2026 | Erstanlage: Baustein 1 und 2, MQ-Logik, README |
+| 0.1 | April 2026 | Erstanlage: Baustein 1 und 2, README |
 | 0.2 | April 2026 | Baustein 3 Tag-Taxonomie ergänzt; README aktualisiert |
+| 0.3 | April 2026 | MQ-Steuerungslogik aus der Dokumentation entfernt; UI übernimmt die Steuerung |
 
 ---
 
