@@ -762,6 +762,13 @@ async function runStep3() {
   const sys = `Du bist Verschlagwortungs-Assistent fuer hoher-list.de (AVV).
 TAG-TAXONOMIE:
 ${T.tags || '(nicht geladen)'}
+
+WICHTIG fuer Katalog-Tags:
+Bei jedem Objekt aus Katalog_Messier oder Katalog_NGC_IC immer BEIDE Eintraege setzen:
+1. Die Katalogbezeichnung (z.B. "M31", "NGC 7293", "IC 1805")
+2. Den gaengigen deutschen oder internationalen Klarnamen (z.B. "Andromedagalaxie", "Helixnebel", "Herznebel")
+Falls kein Klarname existiert oder bekannt ist, nur die Katalogbezeichnung angeben.
+
 Antworte NUR mit gueltigem JSON:
 {"reasoning":"","tags":{"Katalog_Messier":[],"Katalog_NGC_IC":[],"Objekttyp":[],"Beobachtung":[],"Ausruestung":[],"Wissen":[],"Verein_Ort":[],"Zielgruppe":[],"Personen":[],"Neu":[]}}`;
   try {
