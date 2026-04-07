@@ -490,56 +490,76 @@ function onCatChange() {
   document.getElementById('txt-card').style.display = isAstrofoto ? 'none' : 'block';
 }
 
-async function fetchViaProxy(url) {
-  // Mehrere Proxies nacheinander probieren
-  const proxies = [
-    async u => {
-      const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(u));
-      if (!r.ok) throw new Error(r.status);
-      const j = await r.json();
-      if (!j.contents) throw new Error('leer');
-      return j.contents;
-    },
-    async u => {
-      const r = await fetch('https://corsproxy.org/?' + encodeURIComponent(u));
-      if (!r.ok) throw new Error(r.status);
-      return r.text();
-    },
-    async u => {
-      const r = await fetch('https://thingproxy.freeboard.io/fetch/' + u);
-      if (!r.ok) throw new Error(r.status);
-      return r.text();
-    }
-  ];
-  for (const proxy of proxies) {
-    try { return await proxy(url); } catch(e) { /* naechsten versuchen */ }
+function extractAstrobinHash(url) {
+  // https://app.astrobin.com/u/MrDino?i=7w4hkw  oder  /i/7w4hkw/
+  const paramMatch = url.match(/[?&]i=([a-zA-Z0-9]+)/);
+  if (paramMatch) return paramMatch[1];
+  const pathMatch = url.match(/\/i\/([a-zA-Z0-9]+)/);
+  if (pathMatch) return pathMatch[1];
+  // https://www.astrobin.com/7w4hkw/
+  const legacyMatch = url.match(/astrobin\.com\/([a-zA-Z0-9]{4,10})\/?(?:\?|#|$)/);
+  if (legacyMatch) return legacyMatch[1];
+  return null;
+}
+
+async function fetchAstrobinData(url) {
+  const hash = extractAstrobinHash(url);
+  if (!hash) throw new Error('Keine gültige AstroBin-URL. Erwartet z.B.: https://app.astrobin.com/u/Name?i=abc123');
+
+  // AstroBin REST-API direkt anfragen (kein Proxy nötig)
+  const apiUrl = 'https://www.astrobin.com/api/v1/image/?hash=' + hash + '&format=json';
+  const r = await fetch(apiUrl);
+  if (!r.ok) throw new Error('AstroBin API antwortet nicht (HTTP ' + r.status + '). Bitte Daten manuell eingeben.');
+  const data = await r.json();
+  const img = data.objects?.[0];
+  if (!img) throw new Error('Bild nicht in der API gefunden. Bitte prüfen, ob das Bild öffentlich ist.');
+
+  // Equipment-IDs zu Namen auflösen (parallel)
+  async function resolveName(resourceUri) {
+    try {
+      const r2 = await fetch('https://www.astrobin.com' + resourceUri + '?format=json');
+      if (!r2.ok) return resourceUri;
+      const d = await r2.json();
+      return d.name || d.brand + ' ' + (d.name || '') || resourceUri;
+    } catch { return resourceUri; }
   }
-  throw new Error('Alle Proxies fehlgeschlagen. Bitte URL prüfen oder später erneut versuchen.');
+  const [telescopes, cameras, filters] = await Promise.all([
+    Promise.all((img.imaging_telescopes || []).map(resolveName)),
+    Promise.all((img.imaging_cameras    || []).map(resolveName)),
+    Promise.all((img.filters            || []).map(resolveName)),
+  ]);
+
+  return {
+    title:       img.title || '',
+    description: img.description || '',
+    subjects:    img.subjects || [],
+    telescopes,
+    cameras,
+    filters,
+    integration: img.integration || '',
+    published:   img.published ? img.published.slice(0,10) : '',
+    user:        img.user || '',
+  };
 }
 
 async function generateAstrofotoText(url) {
-  document.getElementById('loading-1').querySelector('div + *') || null;
   const loadingEl = document.getElementById('loading-1');
 
-  // Seite laden
-  loadingEl.innerHTML = '<div class="spinner"></div>Lade AstroBin-Seite\u2026';
-  const html = await fetchViaProxy(url);
-
-  // HTML parsen und relevante Inhalte extrahieren
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const ogTitle    = doc.querySelector('meta[property="og:title"]')?.getAttribute('content') || '';
-  const ogDesc     = doc.querySelector('meta[property="og:description"]')?.getAttribute('content') || '';
-  const ldJson     = [...doc.querySelectorAll('script[type="application/ld+json"]')].map(s => s.textContent).join('\n');
-  doc.querySelectorAll('script,style,nav,header,footer,aside,[class*="cookie"],[class*="banner"]').forEach(el => el.remove());
-  const bodyText   = (doc.body?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 8000);
+  // AstroBin API abrufen
+  loadingEl.innerHTML = '<div class="spinner"></div>Lade AstroBin-Daten\u2026';
+  const data = await fetchAstrobinData(url);
 
   const pageContent = [
-    ogTitle  ? 'Titel: ' + ogTitle  : '',
-    ogDesc   ? 'Beschreibung: ' + ogDesc : '',
-    ldJson   ? 'Strukturierte Daten:\n' + ldJson.slice(0, 2000) : '',
-    'Seitentext:\n' + bodyText
-  ].filter(Boolean).join('\n\n');
+    data.title       ? 'Titel: ' + data.title : '',
+    data.subjects.length ? 'Objekte: ' + data.subjects.join(', ') : '',
+    data.description ? 'Beschreibung des Fotografen:\n' + data.description : '',
+    data.telescopes.length ? 'Teleskop/Optik: ' + data.telescopes.join(', ') : '',
+    data.cameras.length    ? 'Kamera: '         + data.cameras.join(', ')    : '',
+    data.filters.length    ? 'Filter: '          + data.filters.join(', ')   : '',
+    data.integration ? 'Gesamtbelichtung: ' + data.integration + ' Min.' : '',
+    data.published   ? 'Aufnahmedatum: '    + data.published : '',
+    data.user        ? 'Fotograf: '         + data.user : '',
+  ].filter(Boolean).join('\n');
 
   // Claude generiert den Beitrag
   loadingEl.innerHTML = '<div class="spinner"></div>Generiere Beitragstext\u2026';
