@@ -127,9 +127,9 @@ select option{background:var(--surface2)}
 .annot-text-box{background:var(--surface2);border:2px solid var(--border);border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.8;white-space:pre-wrap;word-break:break-word;outline:none;min-height:80px}
 .annot-text-box:focus{border-color:var(--accent)}
 .annot{position:relative;border-radius:3px;padding:1px 2px;cursor:pointer}
-.annot-warn{background:#2a1f05;border-bottom:2px solid var(--warn-bd)}
-.annot-err{background:#2a0808;border-bottom:2px solid var(--err-bd)}
-.annot-ok{background:var(--accent-dim);border-bottom:2px solid var(--accent)}
+.annot-warn{background:#3d2e08;border-bottom:2px solid var(--warn-bd);color:var(--text)}
+.annot-err{background:#3d1010;border-bottom:2px solid var(--err-bd);color:var(--text)}
+.annot-ok{background:#0f4028;border-bottom:2px solid var(--accent);color:var(--text)}
 .annot .tip{display:none;position:absolute;bottom:calc(100% + 2px);left:0;z-index:300;background:#1a1d2e;border:1px solid var(--border);color:var(--text);font-size:11px;padding:10px 12px;border-radius:7px;min-width:220px;max-width:340px;line-height:1.55;white-space:normal;pointer-events:auto;box-shadow:0 4px 24px rgba(0,0,0,.6);cursor:default}
 .annot .tip::after{content:'';position:absolute;top:100%;left:0;width:100%;height:8px}
 .annot:hover .tip,.annot .tip:hover{display:block}
@@ -244,10 +244,10 @@ select option{background:var(--surface2)}
       <div class="r-title" style="margin-bottom:8px">Textanalyse <span class="badge" id="badge-gesamt"></span></div>
       <div id="annot-box" class="annot-text-box" contenteditable="true" spellcheck="true" oninput="syncAnnotText()"></div>
       <div class="annot-legend">
-        <span><i style="background:#E1F5EE;border:1px solid #1D9E75"></i> Gut</span>
-        <span><i style="background:#FFF3CD;border:1px solid #FAC775"></i> Hinweis</span>
-        <span><i style="background:#FCEBEB;border:1px solid #E55353"></i> Kritisch</span>
-        <span style="color:#C8C6C0;font-size:10px">&nbsp;&#8212;&nbsp;Mouseover = Tipp &amp; &Uuml;bernehmen</span>
+        <span><i style="background:#0f4028;border:1px solid var(--accent)"></i> Gut</span>
+        <span><i style="background:#3d2e08;border:1px solid var(--warn-bd)"></i> Hinweis</span>
+        <span><i style="background:#3d1010;border:1px solid var(--err-bd)"></i> Kritisch</span>
+        <span style="color:var(--text-m);font-size:10px">&nbsp;&#8212;&nbsp;Mouseover = Tipp &amp; &Uuml;bernehmen</span>
       </div>
       <div class="btn-row" style="margin-top:10px">
         <button class="btn-primary" id="btn-apply-vsl" style="display:none" onclick="applyVorschlag()">&#10003; Alle Verbesserungen &uuml;bernehmen</button>
@@ -293,8 +293,8 @@ select option{background:var(--surface2)}
       <div id="tag-info" class="r-text" style="margin-bottom:10px"></div>
       <div id="tag-groups"></div>
       <div class="tag-sb">
-        <div style="font-size:10px;color:#888780;font-weight:500;margin-bottom:7px">Ausgew&auml;hlte Tags (<span id="tag-cnt">0</span>)</div>
-        <div class="tags" id="sel-tags"><span style="font-size:12px;color:#888780">Keine Tags ausgew&auml;hlt</span></div>
+        <div style="font-size:10px;color:var(--text-m);font-weight:500;margin-bottom:7px">Ausgew&auml;hlte Tags (<span id="tag-cnt">0</span>)</div>
+        <div class="tags" id="sel-tags"><span style="font-size:12px;color:var(--text-m)">Keine Tags ausgew&auml;hlt</span></div>
         <div class="tag-out" id="tag-out" style="display:none"></div>
       </div>
       <div class="btn-row" style="margin-top:10px;justify-content:flex-end">
