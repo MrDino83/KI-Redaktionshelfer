@@ -168,7 +168,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
 
   <!-- PANEL 1: Eingabe & Optionen -->
   <div id="panel-1">
-    <div class="card">
+    <div class="card" id="txt-card">
       <span class="lbl">Beitragstext</span>
       <textarea id="txt" placeholder="Titel und vollst&auml;ndigen Text des Beitrags hier einf&uuml;gen&hellip;" oninput="updateMeta()"></textarea>
       <div class="meta-row">
@@ -181,8 +181,9 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
       <div class="form-grid">
         <div>
           <span class="lbl">Beitragskategorie</span>
-          <select id="cat">
+          <select id="cat" onchange="onCatChange()">
             <option value="">Bitte w&auml;hlen</option>
+            <option value="Astrofoto">Astrofoto (AstroBin)</option>
             <option value="Astrofotos">Astrofotos</option>
             <option value="Wissenswertes">Wissenswertes</option>
             <option value="Wissenschaft">Wissenschaft &amp; Forschung</option>
@@ -205,6 +206,11 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
         </div>
       </div>
     </div>
+    <div class="card" id="astrofoto-card" style="display:none">
+      <span class="lbl">AstroBin-URL</span>
+      <input type="url" id="astrofoto-url" placeholder="https://app.astrobin.com/i/..." style="width:100%;background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C2A;font-family:inherit;font-size:13px;padding:10px 12px;outline:none">
+      <div class="sublbl" style="margin-top:6px">Link zur AstroBin-Seite. Der Beitragstext wird automatisch aus Aufnahmedaten und Objektinformationen generiert.</div>
+    </div>
     <div class="card">
       <span class="lbl">Verarbeitungsmodus</span>
       <div class="radio-group">
@@ -216,6 +222,7 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
     <div id="err-1" style="display:none" class="err-box"></div>
     <div class="btn-row">
       <button class="btn-primary" id="btn-1" onclick="startWizard()">Analyse starten &rarr;</button>
+      <span id="loading-1" style="display:none" class="loading"><div class="spinner"></div>Crawle AstroBin&hellip;</span>
     </div>
   </div>
 
@@ -476,10 +483,108 @@ async function api(sys, usr, max = 1500) {
   return JSON.parse(sanitizeJSON(raw));
 }
 
-function startWizard() {
+function onCatChange() {
+  const cat = document.getElementById('cat').value;
+  const isAstrofoto = cat === 'Astrofoto';
+  document.getElementById('astrofoto-card').style.display = isAstrofoto ? 'block' : 'none';
+  document.getElementById('txt-card').style.display = isAstrofoto ? 'none' : 'block';
+}
+
+async function generateAstrofotoText(url) {
+  // Seite via Proxy laden
+  const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
+  const resp = await fetch(proxyUrl);
+  if (!resp.ok) throw new Error('Seite konnte nicht geladen werden (HTTP ' + resp.status + ')');
+  const html = await resp.text();
+
+  // HTML parsen und relevante Inhalte extrahieren
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const ogTitle    = doc.querySelector('meta[property="og:title"]')?.getAttribute('content') || '';
+  const ogDesc     = doc.querySelector('meta[property="og:description"]')?.getAttribute('content') || '';
+  const ldJson     = [...doc.querySelectorAll('script[type="application/ld+json"]')].map(s => s.textContent).join('\n');
+  doc.querySelectorAll('script,style,nav,header,footer,aside,[class*="cookie"],[class*="banner"]').forEach(el => el.remove());
+  const bodyText   = (doc.body?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 8000);
+
+  const pageContent = [
+    ogTitle  ? 'Titel: ' + ogTitle  : '',
+    ogDesc   ? 'Beschreibung: ' + ogDesc : '',
+    ldJson   ? 'Strukturierte Daten:\n' + ldJson.slice(0, 2000) : '',
+    'Seitentext:\n' + bodyText
+  ].filter(Boolean).join('\n\n');
+
+  // Claude generiert den Beitrag
+  const key = document.getElementById('apikey').value.trim();
+  if (!key) throw new Error('Bitte API-Key eingeben.');
+
+  const sys = `Du bist Redaktionsassistent der AVV (Astronomische Vereinigung Vulkaneifel am Hohen List) und Experte fuer Astronomie und Astrofotografie.
+Du erhaeltst den extrahierten Inhalt einer AstroBin-Aufnahmeseite und erstellst daraus einen deutschen Beitrag fuer hoher-list.de.
+
+AUFGABE:
+1. Extrahiere aus dem Seiteninhalt:
+   - Name des fotografierten Objekts (Messier-/NGC-/IC-Nummer + gaengiger Eigenname)
+   - Verwendetes Equipment (Teleskop/Optik, Montierung, Kamera, Filter)
+   - Aufnahmedetails (Gesamtbelichtungszeit, Datum, Anzahl Aufnahmen)
+   - Name des Fotografen (AVV-Mitglied)
+
+2. Erstelle einen Beitrag mit ca. 250-350 Woertern in diesen Abschnitten:
+   - Einleitung: Was ist das Objekt? Neugier wecken.
+   - Populaerwissenschaftliche Fakten: Entfernung, Groesse, Entstehung, Besonderheiten – faszinierend und verstaendlich.
+   - Equipment und Aufnahme: Womit und wie wurde das Foto gemacht?
+   - Abschluss: persoenlicher, einladender Schlusssatz.
+
+STIL: Begeisternd, populaerwissenschaftlich, fuer interessierte Laien verstaendlich. Kein KI-Klingt-Text.
+SPRACHE: Deutsch.
+Antworte NUR mit dem fertigen Beitragstext, ohne Ueberschriften oder Erklaerungen.`;
+
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 3000,
+      system: sys,
+      messages: [{ role: 'user', content: 'AstroBin-Seiteninhalt:\n\n' + pageContent }]
+    })
+  });
+  if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error?.message || 'API-Fehler ' + r.status); }
+  const d = await r.json();
+  if (d.error) throw new Error(d.error.message);
+  return (d.content?.find(b => b.type === 'text')?.text || '').trim();
+}
+
+async function startWizard() {
+  const cat = document.getElementById('cat').value;
+  const err = document.getElementById('err-1');
+
+  if (cat === 'Astrofoto') {
+    const url = document.getElementById('astrofoto-url').value.trim();
+    if (!url) { err.textContent = 'Bitte AstroBin-URL eingeben.'; err.style.display = 'block'; return; }
+    err.style.display = 'none';
+    document.getElementById('btn-1').style.display = 'none';
+    document.getElementById('loading-1').style.display = 'flex';
+    try {
+      cachedText = await generateAstrofotoText(url);
+    } catch(e) {
+      err.textContent = 'Fehler: ' + e.message; err.style.display = 'block';
+      document.getElementById('btn-1').style.display = 'inline-flex';
+      document.getElementById('loading-1').style.display = 'none';
+      return;
+    }
+    document.getElementById('btn-1').style.display = 'inline-flex';
+    document.getElementById('loading-1').style.display = 'none';
+    done.clear(); done.add(1); goStep(2); runStep2();
+    return;
+  }
+
   const txt = document.getElementById('txt').value.trim();
-  if (!txt) { const e = document.getElementById('err-1'); e.textContent = 'Bitte Beitragstext eingeben.'; e.style.display = 'block'; return; }
-  document.getElementById('err-1').style.display = 'none';
+  if (!txt) { err.textContent = 'Bitte Beitragstext eingeben.'; err.style.display = 'block'; return; }
+  err.style.display = 'none';
   cachedText = txt; done.clear(); done.add(1); goStep(2); runStep2();
 }
 
