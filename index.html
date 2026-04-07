@@ -169,7 +169,8 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
   <!-- PANEL 1: Eingabe & Optionen -->
   <div id="panel-1">
     <div class="card" id="txt-card">
-      <span class="lbl">Beitragstext</span>
+      <span class="lbl" id="txt-lbl">Beitragstext</span>
+      <div id="astrofoto-hint" style="display:none;margin-bottom:8px" class="sublbl">AstroBin-Inhalt hier einf&uuml;gen (Copy&amp;Paste von der Aufnahmeseite). Der Beitragstext wird automatisch generiert.</div>
       <textarea id="txt" placeholder="Titel und vollst&auml;ndigen Text des Beitrags hier einf&uuml;gen&hellip;" oninput="updateMeta()"></textarea>
       <div class="meta-row">
         <div class="meta-item">W&ouml;rter: <span id="meta-words">0</span></div>
@@ -205,11 +206,6 @@ select{background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C
           <div class="sublbl">Steuert Ton, Modalpartikeln und Muster-Anwendung beim Schreiben.</div>
         </div>
       </div>
-    </div>
-    <div class="card" id="astrofoto-card" style="display:none">
-      <span class="lbl">AstroBin-URL</span>
-      <input type="url" id="astrofoto-url" placeholder="https://app.astrobin.com/i/..." style="width:100%;background:#F8F7F3;border:1px solid #E0DED8;border-radius:8px;color:#2C2C2A;font-family:inherit;font-size:13px;padding:10px 12px;outline:none">
-      <div class="sublbl" style="margin-top:6px">Link zur AstroBin-Seite. Der Beitragstext wird automatisch aus Aufnahmedaten und Objektinformationen generiert.</div>
     </div>
     <div class="card">
       <span class="lbl">Verarbeitungsmodus</span>
@@ -486,120 +482,43 @@ async function api(sys, usr, max = 1500) {
 function onCatChange() {
   const cat = document.getElementById('cat').value;
   const isAstrofoto = cat === 'Astrofoto';
-  document.getElementById('astrofoto-card').style.display = isAstrofoto ? 'block' : 'none';
-  document.getElementById('txt-card').style.display = isAstrofoto ? 'none' : 'block';
+  document.getElementById('astrofoto-hint').style.display = isAstrofoto ? 'block' : 'none';
+  document.getElementById('txt').placeholder = isAstrofoto
+    ? 'AstroBin-Inhalt hier einf\u00fcgen (Copy\u0026Paste von der Aufnahmeseite)\u2026'
+    : 'Titel und vollst\u00e4ndigen Text des Beitrags hier einf\u00fcgen\u2026';
 }
 
-function extractAstrobinHash(url) {
-  // https://app.astrobin.com/u/MrDino?i=7w4hkw  oder  /i/7w4hkw/
-  const paramMatch = url.match(/[?&]i=([a-zA-Z0-9]+)/);
-  if (paramMatch) return paramMatch[1];
-  const pathMatch = url.match(/\/i\/([a-zA-Z0-9]+)/);
-  if (pathMatch) return pathMatch[1];
-  // https://www.astrobin.com/7w4hkw/
-  const legacyMatch = url.match(/astrobin\.com\/([a-zA-Z0-9]{4,10})\/?(?:\?|#|$)/);
-  if (legacyMatch) return legacyMatch[1];
-  return null;
-}
-
-async function fetchAstrobinData(url) {
-  const hash = extractAstrobinHash(url);
-  if (!hash) throw new Error('Keine gültige AstroBin-URL. Erwartet z.B.: https://app.astrobin.com/u/Name?i=abc123');
-
-  // AstroBin REST-API direkt anfragen (kein Proxy nötig)
-  const apiUrl = 'https://www.astrobin.com/api/v1/image/?hash=' + hash + '&format=json';
-  const r = await fetch(apiUrl);
-  if (!r.ok) throw new Error('AstroBin API antwortet nicht (HTTP ' + r.status + '). Bitte Daten manuell eingeben.');
-  const data = await r.json();
-  const img = data.objects?.[0];
-  if (!img) throw new Error('Bild nicht in der API gefunden. Bitte prüfen, ob das Bild öffentlich ist.');
-
-  // Equipment-IDs zu Namen auflösen (parallel)
-  async function resolveName(resourceUri) {
-    try {
-      const r2 = await fetch('https://www.astrobin.com' + resourceUri + '?format=json');
-      if (!r2.ok) return resourceUri;
-      const d = await r2.json();
-      return d.name || d.brand + ' ' + (d.name || '') || resourceUri;
-    } catch { return resourceUri; }
-  }
-  const [telescopes, cameras, filters] = await Promise.all([
-    Promise.all((img.imaging_telescopes || []).map(resolveName)),
-    Promise.all((img.imaging_cameras    || []).map(resolveName)),
-    Promise.all((img.filters            || []).map(resolveName)),
-  ]);
-
-  return {
-    title:       img.title || '',
-    description: img.description || '',
-    subjects:    img.subjects || [],
-    telescopes,
-    cameras,
-    filters,
-    integration: img.integration || '',
-    published:   img.published ? img.published.slice(0,10) : '',
-    user:        img.user || '',
-  };
-}
-
-async function generateAstrofotoText(url) {
+async function generateAstrofotoText(raw) {
   const loadingEl = document.getElementById('loading-1');
-
-  // AstroBin API abrufen
-  loadingEl.innerHTML = '<div class="spinner"></div>Lade AstroBin-Daten\u2026';
-  const data = await fetchAstrobinData(url);
-
-  const pageContent = [
-    data.title       ? 'Titel: ' + data.title : '',
-    data.subjects.length ? 'Objekte: ' + data.subjects.join(', ') : '',
-    data.description ? 'Beschreibung des Fotografen:\n' + data.description : '',
-    data.telescopes.length ? 'Teleskop/Optik: ' + data.telescopes.join(', ') : '',
-    data.cameras.length    ? 'Kamera: '         + data.cameras.join(', ')    : '',
-    data.filters.length    ? 'Filter: '          + data.filters.join(', ')   : '',
-    data.integration ? 'Gesamtbelichtung: ' + data.integration + ' Min.' : '',
-    data.published   ? 'Aufnahmedatum: '    + data.published : '',
-    data.user        ? 'Fotograf: '         + data.user : '',
-  ].filter(Boolean).join('\n');
-
-  // Claude generiert den Beitrag
   loadingEl.innerHTML = '<div class="spinner"></div>Generiere Beitragstext\u2026';
+
   const key = document.getElementById('apikey').value.trim();
   if (!key) throw new Error('Bitte API-Key eingeben.');
 
   const sys = `Du bist Redaktionsassistent der AVV (Astronomische Vereinigung Vulkaneifel am Hohen List) und Experte fuer Astronomie und Astrofotografie.
-Du erhaeltst den extrahierten Inhalt einer AstroBin-Aufnahmeseite und erstellst daraus einen deutschen Beitrag fuer hoher-list.de.
+Du erhaeltst den kopierten Rohtext einer AstroBin-Aufnahmeseite (strukturierte Metadaten) und erstellst daraus einen deutschen Beitrag fuer hoher-list.de.
 
 AUFGABE:
-1. Extrahiere aus dem Seiteninhalt:
-   - Name des fotografierten Objekts (Messier-/NGC-/IC-Nummer + gaengiger Eigenname)
-   - Verwendetes Equipment (Teleskop/Optik, Montierung, Kamera, Filter)
-   - Aufnahmedetails (Gesamtbelichtungszeit, Datum, Anzahl Aufnahmen)
-   - Name des Fotografen (AVV-Mitglied)
+1. Entnehme dem Rohtext:
+   - Name des fotografierten Objekts (Katalognummer + Eigenname falls vorhanden)
+   - Verwendetes Equipment: Teleskop, Kamera, Montierung, Filter, Zubehoer
+   - Aufnahmedetails: Gesamtbelichtungszeit, Einzelbelichtung, Anzahl Aufnahmen, Datum, Ort
+   - Name des Fotografen
 
-2. Erstelle einen Beitrag mit ca. 250-350 Woertern in diesen Abschnitten:
-   - Einleitung: Was ist das Objekt? Neugier wecken.
-   - Populaerwissenschaftliche Fakten: Entfernung, Groesse, Entstehung, Besonderheiten – faszinierend und verstaendlich.
-   - Equipment und Aufnahme: Womit und wie wurde das Foto gemacht?
-   - Abschluss: persoenlicher, einladender Schlusssatz.
+2. Erstelle einen Beitrag mit ca. 250-350 Woertern:
+   - Einleitung: Was ist das Objekt? Neugier wecken, nicht trocken.
+   - Populaerwissenschaftliche Fakten aus deinem Wissen: Entfernung, Groesse, Entstehungsgeschichte, was macht es besonders? Fuer interessierte Laien verstaendlich.
+   - Equipment & Aufnahme: Womit und wie lange wurde fotografiert? Was ist technisch interessant daran?
+   - Abschluss: Einladender, persoenlicher Schlusssatz.
 
-STIL: Begeisternd, populaerwissenschaftlich, fuer interessierte Laien verstaendlich. Kein KI-Klingt-Text.
+STIL: Begeisternd, warmherzig, populaerwissenschaftlich. Kein aufgeblasener KI-Klingt-Text, keine generischen Phrasen.
 SPRACHE: Deutsch.
-Antworte NUR mit dem fertigen Beitragstext, ohne Ueberschriften oder Erklaerungen.`;
+Antworte NUR mit dem fertigen Beitragstext, ohne Ueberschriften, Markdown oder Erklaerungen.`;
 
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': key,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 3000,
-      system: sys,
-      messages: [{ role: 'user', content: 'AstroBin-Seiteninhalt:\n\n' + pageContent }]
-    })
+    headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+    body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 3000, system: sys, messages: [{ role: 'user', content: 'AstroBin-Rohdaten:\n\n' + raw }] })
   });
   if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error?.message || 'API-Fehler ' + r.status); }
   const d = await r.json();
@@ -610,15 +529,16 @@ Antworte NUR mit dem fertigen Beitragstext, ohne Ueberschriften oder Erklaerunge
 async function startWizard() {
   const cat = document.getElementById('cat').value;
   const err = document.getElementById('err-1');
+  const raw = document.getElementById('txt').value.trim();
+
+  if (!raw) { err.textContent = cat === 'Astrofoto' ? 'Bitte AstroBin-Inhalt einf\u00fcgen.' : 'Bitte Beitragstext eingeben.'; err.style.display = 'block'; return; }
+  err.style.display = 'none';
 
   if (cat === 'Astrofoto') {
-    const url = document.getElementById('astrofoto-url').value.trim();
-    if (!url) { err.textContent = 'Bitte AstroBin-URL eingeben.'; err.style.display = 'block'; return; }
-    err.style.display = 'none';
     document.getElementById('btn-1').style.display = 'none';
     document.getElementById('loading-1').style.display = 'flex';
     try {
-      cachedText = await generateAstrofotoText(url);
+      cachedText = await generateAstrofotoText(raw);
     } catch(e) {
       err.textContent = 'Fehler: ' + e.message; err.style.display = 'block';
       document.getElementById('btn-1').style.display = 'inline-flex';
@@ -631,10 +551,7 @@ async function startWizard() {
     return;
   }
 
-  const txt = document.getElementById('txt').value.trim();
-  if (!txt) { err.textContent = 'Bitte Beitragstext eingeben.'; err.style.display = 'block'; return; }
-  err.style.display = 'none';
-  cachedText = txt; done.clear(); done.add(1); goStep(2); runStep2();
+  cachedText = raw; done.clear(); done.add(1); goStep(2); runStep2();
 }
 
 // ── Schritt 2: Sprachstil + Menschlichkeit ────────────────────────────────────
