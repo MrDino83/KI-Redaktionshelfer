@@ -1,134 +1,103 @@
-# AVV Beitragscheck — README
+# AVV KI-Redaktionshelfer
 **Astronomische Vereinigung Vulkaneifel am Hohen List e.V.**
-*Dokumentation: Funktionen, Training und Bedienung*
-*Version 0.1 — Stand: April 2026*
+*Version 1.0 — Stand: April 2026*
 
 ---
 
-## Was ist der Beitragscheck?
+## Was ist der KI-Redaktionshelfer?
 
-Der Beitragscheck ist ein KI-gestütztes Redaktionswerkzeug für die AVV. Es unterstützt Autoren dabei, Beiträge für hoher-list.de so zu überarbeiten, dass sie dem Vereinsstil entsprechen, menschlich klingen und inhaltlich korrekt verschlagwortet sind. Das Tool macht Vorschläge — es ersetzt nie die Entscheidung des Autors.
+Der KI-Redaktionshelfer ist ein KI-gestütztes Redaktionswerkzeug für die AVV. Er unterstützt bei der Erstellung und Prüfung von Texten für hoher-list.de, Social Media und Pressemitteilungen — so dass sie dem Vereinsstil entsprechen, menschlich klingen und inhaltlich korrekt sind.
 
-Grundprinzip: Die Stimme des Autors erhalten und stärken, nicht ersetzen.
+**Grundprinzip:** Die Stimme des Autors erhalten und stärken, nicht ersetzen.
 
 ---
 
-## Funktionsübersicht
+## Projektstruktur
 
-Der Beitragscheck prüft jeden eingereichten Text in fünf Bereichen:
+```
+KI-Redaktionshelfer/
+│
+├── README.md                          ← diese Datei
+├── SETUP_GIT.ps1                      ← Git-Setup für Windows
+├── index.html                         ← Web-UI (Startseite)
+│
+├── Training/                          ← alle KI-Trainingsdaten
+│   ├── INDEX.md                       ← Strukturreferenz für KI-Tools (hier starten!)
+│   ├── AVV_Brand_Voice.md             ← globale Markenbasis (immer laden)
+│   ├── AVV_Satzung_LLM_Knowledge_Structured.json
+│   ├── AVV_Mitgliederbefragung_2024_strukturiert.json
+│   ├── AVV_Ideenpool_Mattlener_strukturiert.json
+│   │
+│   ├── Rohdaten/                      ← Quelldokumente, kein Git-Push
+│   │
+│   └── Content/
+│       ├── AVV_Training_Sprachstil.md
+│       ├── AVV_Training_MenschlicheSprache.md
+│       ├── AVV_Training_TagTaxonomie.md
+│       │
+│       ├── Social-Media/
+│       │   ├── AVV_Content_Pillars_Themenideen.md
+│       │   ├── AVV_Caption_Generator.md
+│       │   ├── AVV_Carousel_Blueprint.md
+│       │   ├── AVV_Master_Prompt.md
+│       │   ├── AVV_SPEZIAL_Astrofoto_Post.md
+│       │   ├── AVV_SPEZIAL_Veranstaltungsankuendigung.md
+│       │   ├── Instagram/AVV_Training_Instagram.md
+│       │   ├── Facebook/AVV_Training_Facebook.md
+│       │   ├── Mastodon/AVV_Training_Mastodon.md
+│       │   └── Bluesky/AVV_Training_Bluesky.md
+│       │
+│       └── Website/
+│           └── AVV_Training_Pressemitteilung.md
+│
+└── redaktionshelfer/
+    └── index.html                     ← Web-UI Komponenten
+```
 
-| Funktion | Beschreibung |
+> **Für KI-Tools:** Einstieg immer über `Training/INDEX.md` — dort ist die vollständige Ladelogik beschrieben.
+
+---
+
+## Schnelleinstieg nach Anwendungsfall
+
+| Ich möchte… | Diese Dateien laden |
 |---|---|
-| 1. Sprachstil-Prüfung | Abgleich mit dem AVV-Sprachstil-Guide (Baustein 1) |
-| 2. Menschlichkeits-Prüfung | Erkennung von KI-Sprachmustern, Verbesserungsvorschläge (Baustein 2) |
-| 3. Gegenvorschlag | Annotierter Text bei kleinen Korrekturen; Neuentwurf bei hohem Überarbeitungsbedarf |
-| 4. Fachliche Rückfragen | Inhaltliche Rückfragen auf Basis astronomischen Fachwissens |
-| 5. Verschlagwortung | Vorschlag passender Tags nach der AVV-Tag-Taxonomie (Baustein 3, in Vorbereitung) |
+| Einen Instagram-Post schreiben | `AVV_Brand_Voice.md` + `AVV_Training_Sprachstil.md` + `AVV_Training_Instagram.md` + `AVV_Caption_Generator.md` |
+| Einen Facebook-Post schreiben | `AVV_Brand_Voice.md` + `AVV_Training_Sprachstil.md` + `AVV_Training_Facebook.md` + `AVV_Caption_Generator.md` |
+| Ein Astrofoto begleiten | `AVV_Brand_Voice.md` + `AVV_SPEZIAL_Astrofoto_Post.md` + Kanal-Datei |
+| Eine Veranstaltung ankündigen | `AVV_Brand_Voice.md` + `AVV_SPEZIAL_Veranstaltungsankuendigung.md` + Kanal-Datei |
+| Einen Text prüfen / überarbeiten | `AVV_Training_Sprachstil.md` + `AVV_Training_MenschlicheSprache.md` |
+| WordPress-Tags vergeben | `AVV_Training_TagTaxonomie.md` |
+| Eine Pressemitteilung schreiben | `AVV_Brand_Voice.md` + `AVV_Training_Pressemitteilung.md` |
+
+Die vollständige Ladelogik für alle Anwendungsfälle: **`Training/INDEX.md`**
 
 ---
 
-## Trainingsdateien in diesem Ordner
+## Trainingsdateien — Übersicht
 
-| Datei | Inhalt | Status |
+| Datei | Inhalt | Version |
 |---|---|---|
-| `AVV_Beitragscheck_Sprachstil.md` | Baustein 1: AVV-Tonalität, Satzbau, Perspektive, Längen nach Inhaltstyp | v0.1 — Entwurf |
-| `AVV_Beitragscheck_MenschlicheSprache.md` | Baustein 2: 12 KI-Sprachmuster, Schreibmodi, Fettmarkierungsregeln | v0.1 — Entwurf |
-| `AVV_Beitragscheck_TagTaxonomie.md` | Baustein 3: Tag-Taxonomie — 6 Gruppen, Katalogbezüge, Objekttypen, Ausrüstung, Themen, Verein | v0.1 — Entwurf |
-| `README.md` | Diese Datei | v0.1 |
+| `Training/AVV_Brand_Voice.md` | Markenstimme, Positionierung, Zielgruppen, Do/Don't | v1.0 |
+| `Training/Content/AVV_Training_Sprachstil.md` | Tonalität, Satzbau, Perspektive, Längen | v0.1 |
+| `Training/Content/AVV_Training_MenschlicheSprache.md` | 12 KI-Sprachmuster + Gegenmittel, 4 Schreibmodi | v0.1 |
+| `Training/Content/AVV_Training_TagTaxonomie.md` | 8 Tag-Gruppen, Messier-Vollreferenz, NGC/IC | v0.3 |
+| `Training/Content/Social-Media/AVV_Training_Instagram.md` | Kanal-Regeln Instagram | v0.1 |
+| `Training/Content/Social-Media/Facebook/AVV_Training_Facebook.md` | Kanal-Regeln Facebook | v0.1 |
+| `Training/Content/Social-Media/Mastodon/AVV_Training_Mastodon.md` | Kanal-Regeln Mastodon | v0.1 |
+| `Training/Content/Social-Media/Bluesky/AVV_Training_Bluesky.md` | Kanal-Regeln Bluesky | v0.1 |
+| `Training/Content/Website/AVV_Training_Pressemitteilung.md` | Pressemitteilung: Struktur, Boilerplate | v0.1 |
 
 ---
 
-## Baustein 1 — Sprachstil (`AVV_Beitragscheck_Sprachstil.md`)
+## Unveränderliche Grenzen (für alle KI-Tools)
 
-Definiert den redaktionellen Rahmen für alle AVV-Texte auf hoher-list.de.
-
-Kernregeln:
-- Freundlich, offen, sachlich — nie belehrend
-- Kurze Sätze, aktive Sprache, Hauptsatz vor Nebensatz
-- Fachbegriffe erklären beim ersten Vorkommen
-- Ich-Perspektive bei persönlichen Berichten ausdrücklich erlaubt
-- Keine leeren Einleitungen, keine Superlative ohne Substanz
-- Empfohlene Längen je nach Inhaltstyp (150–900 Wörter)
-
-Quelle: AVV-Vereinsidentität, Ideenpool Marcus Mattlener, Mitgliederbefragung Feb/März 2024
-
----
-
-## Baustein 2 — Menschliche Sprache (`AVV_Beitragscheck_MenschlicheSprache.md`)
-
-Beschreibt 12 Sprachmuster, die KI-generierte oder KI-überarbeitete Texte verraten, und wie diese gezielt gebrochen werden.
-
-Die vier Schreibmodi:
-
-| Modus | Einsatz |
-|---|---|
-| sachlich | Ankündigungen, Vereinsnachrichten |
-| technisch | Wissensbeiträge, Ausrüstung, Beobachtungsmethoden |
-| persönlich | Erfahrungsberichte, Beobachtungsberichte |
-| emotional | Besondere Ereignisse, Highlights |
-
-Die 12 Muster im Überblick:
-
-1. Gleichförmige Satzlänge
-2. Überperfekte Übergänge
-3. Fehlende Übergangsbrüche
-4. Sichere, erwartbare Wortwahl
-5. Fehlende Modalpartikeln
-6. Überkorrekte Grammatik
-7. Fehlende Unsicherheitsmarker
-8. Keine Anekdoten oder Mikro-Erlebnisse
-9. Fehlende Diskursmarker
-10. Überkohäsive Absätze
-11. Keine Ambivalenz
-12. Fehlende semantische Überraschungen
-
-Wichtig: Muster 5 und 6 gelten nur im Modus *persönlich* oder *emotional* — nicht in sachlichen oder technischen Beiträgen.
-
-Quelle: Trainingslogik „Menschliche Sprache“, adaptiert für AVV
-
----
-
-## Baustein 3 — Tag-Taxonomie (`AVV_Beitragscheck_TagTaxonomie.md`)
-
-Definiert die Verschlagwortungslogik für WordPress in sechs Gruppen:
-
-| Gruppe | Inhalt |
-|---|---|
-| 1 — Astronomische Objekte | Katalogbezüge M, NGC, IC, Caldwell; Eigennamen |
-| 2 — Objekttypen | Galaxien, Nebel, Sternhaufen, Planeten, Kometen etc. |
-| 3 — Beobachtung & Methodik | Visuelle Beobachtung, Astrofotografie, Spektroskopie etc. |
-| 4 — Ausrüstung & Technik | Teleskope, Montierungen, Kameras, Software etc. |
-| 5 — Themen & Wissensgebiete | Astrophysik, Kosmologie, Raumfahrt, Himmelsphänomene etc. |
-| 6 — Verein, Veranstaltungen & Ort | Hoher List, AVV, Vulkaneifel, Sternenpark etc. |
-
-Grundregel: 3–7 Tags pro Beitrag. Katalogbezeichnungen im Format `M 42`, `NGC 224`, `IC 434`.
-
----
-
-## Ausgabeverhalten des Beitragschecks
-
-Bei geringem Überarbeitungsbedarf:
-- Annotierter Originaltext mit eingearbeiteten Verbesserungsvorschlägen
-- Fachliche Rückfragen zum Inhalt
-- Tag-Vorschläge
-
-Bei hohem Überarbeitungsbedarf:
-- Vollständiger Neuentwurf als Gegenvorschlag
-- Begründung der wesentlichen Änderungen
-- Fachliche Rückfragen zum Inhalt
-- Tag-Vorschläge
-
-Ton: immer konstruktiv, nie belehrend. Vorschläge sind Angebote, keine Korrekturen.
-
----
-
-## Unveränderliche Grenzen
-
-Unabhängig von Modus und Einstellungen gilt:
+Unabhängig vom Anwendungsfall gilt immer:
 - Keine Fakten erfinden oder Quellen vortäuschen
 - Keine Emotion über den Kontext hinaus
-- Menschlichkeit nie als Vorwand für Unklarheit bei Terminen, Fakten oder Vereinsinformationen
 - Keine Werbung für kommerzielle Produkte oder Anbieter
+- Keine politischen Aussagen oder Pseudowissenschaft (Astrologie etc.)
+- Menschlichkeit nie als Vorwand für Unklarheit bei Terminen oder Vereinsinformationen
 
 ---
 
@@ -136,11 +105,11 @@ Unabhängig von Modus und Einstellungen gilt:
 
 | Version | Datum | Änderung |
 |---|---|---|
-| 0.1 | April 2026 | Erstanlage: Baustein 1 und 2, README |
-| 0.2 | April 2026 | Baustein 3 Tag-Taxonomie ergänzt; README aktualisiert |
-| 0.3 | April 2026 | MQ-Steuerungslogik aus der Dokumentation entfernt; UI übernimmt die Steuerung |
+| 0.1 | April 2026 | Erstanlage: Beitragscheck Baustein 1 und 2 |
+| 0.2 | April 2026 | Baustein 3 Tag-Taxonomie; Kanal-Trainings |
+| 0.3 | April 2026 | MQ-Steuerungslogik entfernt; UI übernimmt Steuerung |
+| 1.0 | April 2026 | Komplette Neustrukturierung: Training/-Ordner, INDEX.md, Social-Media-Prompts integriert, Brand Voice als zentrale Referenz |
 
 ---
 
 *Verantwortlich: Marcus Mattlener — Astronomische Vereinigung Vulkaneifel am Hohen List e.V.*
-*Ablageort: Öffentlichkeitsarbeit - Dokumente / Content und Social Media / KI-Redaktionshelfer*

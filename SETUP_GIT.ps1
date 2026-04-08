@@ -1,132 +1,170 @@
 # ============================================================
-# AVV KI-Redaktionshelfer — Git Setup & Push
-# Einmalig ausfuehren: Rechtsklick -> "Mit PowerShell ausfuehren"
+# AVV KI-Redaktionshelfer — Git Sync & Push
+# Ausfuehren: Rechtsklick -> "Mit PowerShell ausfuehren"
+# Version: 2.1 — Stand: April 2026
 # ============================================================
 
 $ErrorActionPreference = "Stop"
 
-# Zielordner fuer das geklonte Repo
-$repoUrl   = "https://github.com/MrDino83/AVV.git"
-$repoDir   = "C:\Repos\AVV"
-$sourceDir = "C:\Users\mmatt\Astronomische Vereinigung Vulkaneifel am Hohen List e.V\Öffentlichkeitsarbeit - Dokumente\Content und Social Media\KI-Redaktionshelfer"
+# Pfade — automatisch aus dem Speicherort dieser Datei ermittelt
+$repoDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$repoUrl = "https://github.com/MrDino83/KI-Redaktionshelfer.git"
 
 Write-Host ""
-Write-Host "AVV Git Setup" -ForegroundColor Cyan
+Write-Host "AVV KI-Redaktionshelfer — Git Sync v2.1" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Cyan
+Write-Host "Repo-Pfad: $repoDir" -ForegroundColor Gray
 
-# 1. Git pruefen
-Write-Host "`n[1/5] Pruefe Git..." -ForegroundColor Yellow
+# ── 1. Git pruefen ────────────────────────────────────────────
+Write-Host "`n[1/4] Pruefe Git..." -ForegroundColor Yellow
 try {
     $gitVersion = git --version
     Write-Host "     OK: $gitVersion" -ForegroundColor Green
 } catch {
     Write-Host "     FEHLER: Git nicht gefunden." -ForegroundColor Red
     Write-Host "     Bitte installieren: https://git-scm.com/download/win" -ForegroundColor Red
-    Write-Host "     Danach dieses Skript erneut ausfuehren." -ForegroundColor Red
     Read-Host "`nDruecke Enter zum Beenden"
     exit 1
 }
 
-# 2. Repo klonen oder aktualisieren
-Write-Host "`n[2/5] Repo vorbereiten..." -ForegroundColor Yellow
-if (Test-Path "$repoDir\.git") {
-    Write-Host "     Repo existiert bereits — fuehre git pull aus..." -ForegroundColor Gray
-    Set-Location $repoDir
-    git pull
+# ── 2. Repo pruefen ───────────────────────────────────────────
+Write-Host "`n[2/4] Pruefe Repo..." -ForegroundColor Yellow
+Set-Location $repoDir
+
+if (-not (Test-Path "$repoDir\.git")) {
+    Write-Host "     Kein Git-Repo gefunden — initialisiere..." -ForegroundColor DarkYellow
+    git init
+    git remote add origin $repoUrl
+    Write-Host "     OK: Repo initialisiert und Remote gesetzt" -ForegroundColor Green
 } else {
-    Write-Host "     Klone Repo nach $repoDir ..." -ForegroundColor Gray
-    New-Item -ItemType Directory -Path $repoDir -Force | Out-Null
-    git clone $repoUrl $repoDir
-    Set-Location $repoDir
-}
-Write-Host "     OK" -ForegroundColor Green
-
-# 3. Zielstruktur anlegen
-Write-Host "`n[3/5] Erstelle Zielstruktur im Repo..." -ForegroundColor Yellow
-$targetRoot  = "$repoDir\KI-Redaktionshelfer"
-$targetTrain = "$repoDir\KI-Redaktionshelfer\trainingsdateien"
-
-New-Item -ItemType Directory -Path $targetRoot  -Force | Out-Null
-New-Item -ItemType Directory -Path $targetTrain -Force | Out-Null
-Write-Host "     OK: KI-Redaktionshelfer/" -ForegroundColor Green
-Write-Host "     OK: KI-Redaktionshelfer/trainingsdateien/" -ForegroundColor Green
-
-# 4. Dateien kopieren
-Write-Host "`n[4/5] Kopiere Dateien..." -ForegroundColor Yellow
-
-# index.html -> KI-Redaktionshelfer/index.html
-$indexSrc = "$sourceDir\index.html"
-if (Test-Path $indexSrc) {
-    Copy-Item $indexSrc "$targetRoot\index.html" -Force
-    Write-Host "     OK: index.html" -ForegroundColor Green
-} else {
-    Write-Host "     WARNUNG: index.html nicht gefunden" -ForegroundColor DarkYellow
+    Write-Host "     OK: Git-Repo vorhanden" -ForegroundColor Green
+    Write-Host "     Fuhre git pull aus..." -ForegroundColor Gray
+    git pull origin master 2>&1 | Write-Host
 }
 
-# README.md -> KI-Redaktionshelfer/README.md
-$readmeSrc = "$sourceDir\README.md"
-if (Test-Path $readmeSrc) {
-    Copy-Item $readmeSrc "$targetRoot\README.md" -Force
-    Write-Host "     OK: README.md" -ForegroundColor Green
-}
+# ── 3. Dateistruktur validieren ───────────────────────────────
+Write-Host "`n[3/4] Validiere Dateistruktur..." -ForegroundColor Yellow
 
-# Alle .md Trainingsdateien -> KI-Redaktionshelfer/trainingsdateien/
-$mdFiles = @(
-    "AVV_Beitragscheck_Sprachstil.md",
-    "AVV_Beitragscheck_MenschlicheSprache.md",
-    "AVV_Beitragscheck_TagTaxonomie.md",
-    "AVV_Beitragscheck_Instagram.md",
-    "AVV_Beitragscheck_Facebook.md",
-    "AVV_Beitragscheck_Bluesky.md",
-    "AVV_Beitragscheck_Mastodon.md",
-    "AVV_Beitragscheck_Pressemitteilung.md"
+$erwarteteOrdner = @(
+    "Training",
+    "Training\Content",
+    "Training\Content\Social-Media",
+    "Training\Content\Social-Media\Instagram",
+    "Training\Content\Social-Media\Facebook",
+    "Training\Content\Social-Media\Mastodon",
+    "Training\Content\Social-Media\Bluesky",
+    "Training\Content\Website",
+    "redaktionshelfer"
 )
 
-foreach ($file in $mdFiles) {
-    $src = "$sourceDir\$file"
-    if (Test-Path $src) {
-        Copy-Item $src "$targetTrain\$file" -Force
-        Write-Host "     OK: trainingsdateien/$file" -ForegroundColor Green
+$erwarteteKernDateien = @(
+    "README.md",
+    "index.html",
+    ".gitignore",
+    "Training\INDEX.md",
+    "Training\AVV_Brand_Voice.md",
+    "Training\AVV_Satzung_LLM_Knowledge_Structured.json",
+    "Training\AVV_Mitgliederbefragung_2024_strukturiert.json",
+    "Training\AVV_Ideenpool_Mattlener_strukturiert.json",
+    "Training\Content\AVV_Training_Sprachstil.md",
+    "Training\Content\AVV_Training_MenschlicheSprache.md",
+    "Training\Content\AVV_Training_TagTaxonomie.md",
+    "Training\Content\Social-Media\AVV_Content_Pillars_Themenideen.md",
+    "Training\Content\Social-Media\AVV_Caption_Generator.md",
+    "Training\Content\Social-Media\AVV_Carousel_Blueprint.md",
+    "Training\Content\Social-Media\AVV_Master_Prompt.md",
+    "Training\Content\Social-Media\AVV_SPEZIAL_Astrofoto_Post.md",
+    "Training\Content\Social-Media\AVV_SPEZIAL_Veranstaltungsankuendigung.md",
+    "Training\Content\Social-Media\Instagram\AVV_Training_Instagram.md",
+    "Training\Content\Social-Media\Facebook\AVV_Training_Facebook.md",
+    "Training\Content\Social-Media\Mastodon\AVV_Training_Mastodon.md",
+    "Training\Content\Social-Media\Bluesky\AVV_Training_Bluesky.md",
+    "Training\Content\Website\AVV_Training_Pressemitteilung.md"
+)
+
+$fehler = 0
+
+foreach ($ordner in $erwarteteOrdner) {
+    $pfad = Join-Path $repoDir $ordner
+    if (Test-Path $pfad) {
+        Write-Host "     OK:  $ordner\" -ForegroundColor Green
     } else {
-        Write-Host "     WARNUNG: $file nicht gefunden" -ForegroundColor DarkYellow
+        Write-Host "     FEHLT: $ordner\" -ForegroundColor Red
+        $fehler++
     }
 }
 
-# 5. Git commit & push
-Write-Host "`n[5/5] Git commit & push..." -ForegroundColor Yellow
-Set-Location $repoDir
+foreach ($datei in $erwarteteKernDateien) {
+    $pfad = Join-Path $repoDir $datei
+    if (Test-Path $pfad) {
+        Write-Host "     OK:  $datei" -ForegroundColor Green
+    } else {
+        Write-Host "     FEHLT: $datei" -ForegroundColor Red
+        $fehler++
+    }
+}
 
-git add "KI-Redaktionshelfer/"
+if ($fehler -gt 0) {
+    Write-Host "`n     $fehler Datei(en)/Ordner fehlen." -ForegroundColor Red
+    Write-Host "     Bitte Struktur pruefen bevor gepusht wird." -ForegroundColor Red
+    Read-Host "`nDruecke Enter zum Beenden"
+    exit 1
+}
+
+Write-Host "`n     Alle $($erwarteteKernDateien.Count) Kerndateien vorhanden." -ForegroundColor Green
+
+# ── 4. Git commit & push ──────────────────────────────────────
+Write-Host "`n[4/4] Git commit & push..." -ForegroundColor Yellow
+
+# Rohdaten explizit aus dem Index entfernen (zusaetzlich zu .gitignore)
+git rm -r --cached "Training/Rohdaten/" 2>$null
+
+git add .
 
 $status = git status --porcelain
 if ($status) {
-    git commit -m "KI-Redaktionshelfer: index.html + 8 Trainingsdateien (Wizard v2.0)"
-    git push
-    Write-Host "     OK: Gepusht zu GitHub" -ForegroundColor Green
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm"
+    $commitMsg = "Training v3.0: Neue Dateistruktur, Brand Voice, Social-Media-Prompts [$timestamp]"
+    git commit -m $commitMsg
+    git push origin master
+    Write-Host "     OK: Erfolgreich gepusht zu GitHub" -ForegroundColor Green
+    Write-Host "     Commit: $commitMsg" -ForegroundColor Gray
 } else {
     Write-Host "     Keine Aenderungen — nichts zu pushen." -ForegroundColor Gray
 }
 
-# Ergebnis
+# ── Ergebnis ──────────────────────────────────────────────────
 Write-Host ""
 Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host "Fertig! Repo-Struktur:" -ForegroundColor Cyan
+Write-Host "Fertig! Repo-Struktur (v3.0):" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "  C:\Repos\AVV\" -ForegroundColor White
-Write-Host "  └── KI-Redaktionshelfer\" -ForegroundColor White
-Write-Host "      ├── index.html" -ForegroundColor White
-Write-Host "      ├── README.md" -ForegroundColor White
-Write-Host "      └── trainingsdateien\" -ForegroundColor White
-Write-Host "          ├── AVV_Beitragscheck_Sprachstil.md" -ForegroundColor White
-Write-Host "          ├── AVV_Beitragscheck_MenschlicheSprache.md" -ForegroundColor White
-Write-Host "          ├── AVV_Beitragscheck_TagTaxonomie.md" -ForegroundColor White
-Write-Host "          ├── AVV_Beitragscheck_Instagram.md" -ForegroundColor White
-Write-Host "          ├── AVV_Beitragscheck_Facebook.md" -ForegroundColor White
-Write-Host "          ├── AVV_Beitragscheck_Bluesky.md" -ForegroundColor White
-Write-Host "          ├── AVV_Beitragscheck_Mastodon.md" -ForegroundColor White
-Write-Host "          └── AVV_Beitragscheck_Pressemitteilung.md" -ForegroundColor White
+Write-Host "  KI-Redaktionshelfer\"                                      -ForegroundColor White
+Write-Host "  ├── README.md"                                              -ForegroundColor White
+Write-Host "  ├── index.html                    (Wizard v3.0)"           -ForegroundColor White
+Write-Host "  ├── .gitignore"                                             -ForegroundColor White
+Write-Host "  ├── Training\"                                               -ForegroundColor White
+Write-Host "  │   ├── INDEX.md                  <- Einstieg fuer KI"     -ForegroundColor White
+Write-Host "  │   ├── AVV_Brand_Voice.md        <- immer laden"          -ForegroundColor White
+Write-Host "  │   ├── AVV_Satzung_*.json"                                 -ForegroundColor White
+Write-Host "  │   ├── AVV_Mitgliederbefragung_*.json"                     -ForegroundColor White
+Write-Host "  │   ├── AVV_Ideenpool_*.json"                               -ForegroundColor White
+Write-Host "  │   ├── Rohdaten\               <- kein Git-Push"          -ForegroundColor DarkGray
+Write-Host "  │   └── Content\"                                            -ForegroundColor White
+Write-Host "  │       ├── AVV_Training_Sprachstil.md"                     -ForegroundColor White
+Write-Host "  │       ├── AVV_Training_MenschlicheSprache.md"             -ForegroundColor White
+Write-Host "  │       ├── AVV_Training_TagTaxonomie.md"                   -ForegroundColor White
+Write-Host "  │       ├── Social-Media\"                                   -ForegroundColor White
+Write-Host "  │       │   ├── [6 Prompt-Dateien]"                        -ForegroundColor White
+Write-Host "  │       │   ├── Instagram\AVV_Training_Instagram.md"        -ForegroundColor White
+Write-Host "  │       │   ├── Facebook\AVV_Training_Facebook.md"          -ForegroundColor White
+Write-Host "  │       │   ├── Mastodon\AVV_Training_Mastodon.md"          -ForegroundColor White
+Write-Host "  │       │   └── Bluesky\AVV_Training_Bluesky.md"            -ForegroundColor White
+Write-Host "  │       └── Website\"                                        -ForegroundColor White
+Write-Host "  │           └── AVV_Training_Pressemitteilung.md"           -ForegroundColor White
+Write-Host "  └── redaktionshelfer\"                                       -ForegroundColor White
+Write-Host "      └── index.html"                                         -ForegroundColor White
 Write-Host ""
-Write-Host "GitHub Pages: https://mrdino83.github.io/AVV/KI-Redaktionshelfer/" -ForegroundColor Cyan
+Write-Host "GitHub: https://github.com/MrDino83/KI-Redaktionshelfer"     -ForegroundColor Cyan
 Write-Host ""
 
 Read-Host "Druecke Enter zum Beenden"

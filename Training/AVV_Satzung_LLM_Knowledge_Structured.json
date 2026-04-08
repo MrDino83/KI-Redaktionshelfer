@@ -1,0 +1,692 @@
+{
+  "document_name": "AVV_Satzung.pdf",
+  "document_type": "satzung",
+  "version_context": {
+    "place": "Hoher List",
+    "date": "2024-07-10",
+    "signatory": {
+      "name": "Dr. Martin Miller",
+      "role": "1. Vorsitzender"
+    }
+  },
+  "source_traceability": {
+    "basis": "OCR + manuelle Strukturierung auf Basis des hochgeladenen Scan-PDFs",
+    "source_file": "/mnt/data/AVV_Satzung.pdf"
+  },
+  "sections": [
+    {
+      "section_number": 1,
+      "section_title": "Name - Sitz - Geschäftsjahr",
+      "page_span": [
+        1,
+        1
+      ],
+      "clauses": [
+        {
+          "clause_number": "1",
+          "text": "Der Verein führt den Namen \"Astronomische Vereinigung Vulkaneifel am Hohen List e.V.\" Er ist in das Vereinsregister eingetragen."
+        },
+        {
+          "clause_number": "2",
+          "text": "Sitz des Vereins ist Schalkenmehren im Landkreis Vulkaneifel."
+        },
+        {
+          "clause_number": "3",
+          "text": "Das Geschäftsjahr ist das Kalenderjahr."
+        }
+      ]
+    },
+    {
+      "section_number": 2,
+      "section_title": "Zweck des Vereins",
+      "page_span": [
+        1,
+        1
+      ],
+      "clauses": [
+        {
+          "clause_number": "1",
+          "text": "Der Verein verfolgt ausschließlich und unmittelbar gemeinnützige Zwecke im Sinne des Abschnitts \"Steuerbegünstigte Zwecke\" der Abgabenordnung."
+        },
+        {
+          "clause_number": "2",
+          "text": "Zweck des Vereins ist die Förderung von Wissenschaft und Forschung sowie von Erziehung und Volks- und Berufsbildung."
+        },
+        {
+          "clause_number": "3",
+          "text": "Der Satzungszweck wird insbesondere verwirklicht durch das Bemühen um den Erhalt des Observatoriums Hoher List und die Behandlung praktischer und theoretischer Fragen der Astronomie und verwandter Wissensgebiete in populärer und wissenschaftlicher Form in Vorträgen, Kursen, Seminaren, Führungen und astronomischen Beobachtungen am Observatorium Hoher List und anderen Veranstaltungen zu aktuellen astronomischen Ereignissen. Zudem soll durch die Teilnahme des Vereins an öffentlichen Veranstaltungen in der Region die Astronomie einer breiten Öffentlichkeit als Wissenschaft zugänglich gemacht werden. Ergänzend dazu unterstützt der Verein die Bildungsarbeit von Kindern und Jugendlichen auf dem Gebiet der Astronomie und angrenzender Wissenschaften. Hierbei stehen Kurse und sonstige Veranstaltungen für Schulen und andere Weiterbildungsträger im Vordergrund."
+        }
+      ]
+    },
+    {
+      "section_number": 3,
+      "section_title": "Gemeinnützigkeit",
+      "page_span": [
+        1,
+        1
+      ],
+      "clauses": [
+        {
+          "clause_number": "1",
+          "text": "Der Verein ist selbstlos tätig; er verfolgt nicht in erster Linie eigenwirtschaftliche Zwecke."
+        },
+        {
+          "clause_number": "2",
+          "text": "Mittel des Vereins dürfen nur für satzungsmäßige Zwecke verwendet werden. Die Mitglieder erhalten in ihrer Eigenschaft als Mitglieder keine Zuwendungen aus Mitteln des Vereins. Es darf keine Person durch Ausgaben, die dem Zweck der Körperschaft fremd sind, oder durch unverhältnismäßig hohe Vergütungen begünstigt werden."
+        },
+        {
+          "clause_number": "3",
+          "text": "Mitglieder und Organe des Vereins haben gegenüber dem Verein einen Anspruch auf Ersatz der von ihnen im Zusammenhang mit ihrer Amtsausübung verauslagten Aufwendungen im Rahmen der Beschlüsse des Vorstands. Der Anspruch auf Aufwendungsersatz kann nur innerhalb einer Frist von 3 Monaten nach seiner Entstehung geltend gemacht werden. Erstattungen werden nur gewährt, wenn die Aufwendungen mit prüffähigen Belegen nachgewiesen werden."
+        },
+        {
+          "clause_number": "4",
+          "text": "Die Mitgliederversammlung kann beschließen, dass Mitglieder für ihre Tätigkeit für den Verein eine Vergütung gem. § 3 Nr. 26a EStG erhalten. Die Durchführung der Vergütungsregelung obliegt dem Vorstand."
+        }
+      ]
+    },
+    {
+      "section_number": 4,
+      "section_title": "Mitgliedschaft",
+      "page_span": [
+        1,
+        2
+      ],
+      "clauses": [
+        {
+          "clause_number": "1",
+          "text": "Der Verein hat ordentliche Mitglieder und Ehrenmitglieder."
+        },
+        {
+          "clause_number": "2",
+          "text": "Ehrenmitglied kann werden, wer sich um das Observatorium Hoher List, den Verein oder die Astronomie besondere Verdienste erworben hat. Die Ernennung zum Ehrenmitglied erfolgt auf Vorschlag des Vorstandes oder von mindestens zehn Mitgliedern durch Beschluss der Mitgliederversammlung."
+        },
+        {
+          "clause_number": "3",
+          "text": "Ordentliches Mitglied kann jede natürliche Person ab Vollendung des 16. Lebensjahres oder jede juristische Person sein. Wer sich um die Mitgliedschaft bewirbt, hat beim Vorstand einen Antrag in Textform einzureichen. Bei Minderjährigen ist eine Zustimmungserklärung der Erziehungsberechtigten beizufügen. Der Vorstand beschließt über den Aufnahmeantrag nach freiem Ermessen. Eine Ablehnung des Antrages muss er gegenüber dem Antragsteller nicht begründen."
+        },
+        {
+          "clause_number": "4",
+          "text": "Die Mitgliedschaft endet durch Tod, bei juristischen Personen durch Erlöschen, Austritt oder Ausschluss."
+        },
+        {
+          "clause_number": "5",
+          "text": "Der Austritt ist in Textform gegenüber dem Vorstand zu erklären. Er ist zum Schluss eines Geschäftsjahres zulässig und muss bis spätestens zum 30. September eines Jahres erklärt werden."
+        },
+        {
+          "clause_number": "6",
+          "text": "Ein Mitglied kann durch Beschluss der Mitgliederversammlung aus dem Verein aus wichtigem Grund ausgeschlossen werden. Als wichtiger Grund gilt insbesondere, wenn ein Mitglied nachhaltig den Zielen des Vereins zuwiderhandelt, den Verein schädigt oder mit seiner Beitragszahlung über ein Jahr im Rückstand ist und zweimal erfolglos zur Zahlung aufgefordert wurde. Die Verpflichtung zur Zahlung rückständiger Beiträge entfällt durch den Ausschluss nicht."
+        }
+      ]
+    },
+    {
+      "section_number": 5,
+      "section_title": "Rechte und Pflichten der Mitglieder",
+      "page_span": [
+        2,
+        2
+      ],
+      "clauses": [
+        {
+          "clause_number": "1",
+          "text": "Die Mitglieder sind berechtigt, die Einrichtungen des Vereins entsprechend der Hausordnung zu nutzen und an den angebotenen Veranstaltungen des Vereins teilzunehmen. Die Hausordnung wird vom Vorstand einstimmig beschlossen."
+        },
+        {
+          "clause_number": "2",
+          "text": "In der Mitgliederversammlung hat jedes Mitglied eine Stimme. Dies gilt auch für juristische Personen. Das Stimmrecht ist persönlich auszuüben."
+        },
+        {
+          "clause_number": "3",
+          "text": "Die Mitglieder sind zur Zahlung von Jahresbeiträgen verpflichtet, wobei sie im Beitrittsjahr beitragsfrei bleiben. Ehrenmitglieder sind von der Beitragspflicht auf Dauer befreit."
+        },
+        {
+          "clause_number": "4",
+          "text": "In begründeten Einzelfällen kann der Vorstand einem Mitglied Beiträge ermäßigen, stunden oder erlassen."
+        },
+        {
+          "clause_number": "5",
+          "text": "Für Höhe und Modalitäten der regelmäßigen Beiträge ist die jeweils gültige Beitragsordnung maßgebend, die vom Vorstand nach Anhörung der Mitgliederversammlung beschlossen wird. Die Mitgliederversammlung kann darüber hinaus einmalige Sonderumlagen beschließen."
+        }
+      ]
+    },
+    {
+      "section_number": 6,
+      "section_title": "Organe des Vereins",
+      "page_span": [
+        2,
+        2
+      ],
+      "clauses": [
+        {
+          "clause_number": null,
+          "text": "Organe des Vereins sind der Vorstand und die Mitgliederversammlung."
+        }
+      ]
+    },
+    {
+      "section_number": 7,
+      "section_title": "Vorstand",
+      "page_span": [
+        2,
+        3
+      ],
+      "clauses": [
+        {
+          "clause_number": "1",
+          "text": "Der Vorstand besteht aus sieben Mitgliedern: der 1. Vorsitzende, zwei Stellvertreter, der Schatzmeister, drei weitere Vorstandsmitglieder."
+        },
+        {
+          "clause_number": "2",
+          "text": "Die Mitglieder des Vorstandes werden durch die Mitgliederversammlung für die Dauer von zwei Jahren gewählt. Mitglied des Vorstands können nur natürliche Personen sein, die zugleich Mitglieder des Vereins sind. Mit der Mitgliedschaft im Verein endet auch die Mitgliedschaft im Vorstand. Die Wiederwahl oder die vorzeitige Abberufung eines Vorstandsmitgliedes durch die Mitgliederversammlung ist zulässig. Die Vorstandsmitglieder bleiben nach Ablauf der regulären Amtszeit bis zur nächsten Mitgliederversammlung im Amt."
+        },
+        {
+          "clause_number": "3",
+          "text": "Scheidet ein Mitglied vorzeitig aus dem Vorstand aus, können die verbleibenden Vorstandsmitglieder durch einstimmigen Beschluss die Vorstandsämter neu verteilen und ein Mitglied des Vereins bis zur nächsten Mitgliederversammlung in den Vorstand kooptieren."
+        },
+        {
+          "clause_number": "4",
+          "text": "Dem Vorstand des Vereins obliegt die Führung der Geschäfte. Die Tätigkeit des Vorstands erfolgt auf der Grundlage der Geschäftsordnung. Über die Geschäftsordnung und ihre Änderungen beschließt der Vorstand einstimmig."
+        },
+        {
+          "clause_number": "5",
+          "text": "Die gerichtliche und außergerichtliche Vertretung des Vereins i.S.d. § 26 Abs. 1 BGB erfolgt durch den 1. Vorsitzenden, seine beiden Stellvertreter und den Schatzmeister. Jedes dieser Vorstandsmitglieder ist im Außenverhältnis allein zur Vertretung des Vereins berechtigt. Dies gilt nicht für den Erwerb und die Veräußerung von Grundstücken und grundstücksgleichen Rechten sowie das Eingehen von Verbindlichkeiten von mehr als EUR 5.000 im Einzelfall: Bei diesen Geschäften vertreten je zwei Mitglieder des Vorstands gem. § 26 Abs. 1 BGB den Verein im Außenverhältnis gemeinschaftlich. Im Innenverhältnis kann die Mitgliederversammlung weitere Regelungen zur Vertretung des Vereins in einer Vertretungsordnung beschließen."
+        },
+        {
+          "clause_number": "6",
+          "text": "Für einzelne Geschäftskreise kann der Vorstand durch einstimmigen Beschluss besondere Vertreter nach § 30 BGB bestellen, die bei der Ausübung ihres Amtes im Innenverhältnis an die Vorgaben des Vorstandes gebunden sind. Die Bestellung kommt insbesondere für die Geschäftskreise Öffentlichkeitsarbeit, Veranstaltungsmanagement, Betreuung der Mitglieder und Justiziariat in Betracht."
+        }
+      ]
+    },
+    {
+      "section_number": 8,
+      "section_title": "Mitgliederversammlung",
+      "page_span": [
+        3,
+        4
+      ],
+      "clauses": [
+        {
+          "clause_number": "1",
+          "text": "Die Mitgliederversammlung ist für alle Angelegenheiten des Vereins zuständig, soweit sie nicht dem Vorstand übertragen sind."
+        },
+        {
+          "clause_number": "2",
+          "text": "Mindestens einmal im Jahr, möglichst im zweiten Quartal, ist vom Vorstand eine ordentliche Mitgliederversammlung mit einer Frist von vier Wochen einzuberufen."
+        },
+        {
+          "clause_number": "3",
+          "text": "Die Einberufung erfolgt in Textform an eine vom Mitglied dafür zur Verfügung gestellte E-Mail-Adresse. Sofern eine solche nicht vorliegt, ist sie an die letzte, vom Mitglied angegebene postalische Anschrift zu richten. Der Einladung ist eine Tagesordnung beizufügen."
+        },
+        {
+          "clause_number": "4",
+          "text": "Bei der Berufung der Versammlung kann der Vorstand nach freiem Ermessen vorsehen, dass Mitglieder auch ohne Anwesenheit am Versammlungsort im Wege der elektronischen Kommunikation an der Versammlung teilnehmen können. In diesem Fall ist in der Einladung mitzuteilen, wie die Mitglieder ihre Rechte im Wege der elektronischen Kommunikation ausüben können."
+        },
+        {
+          "clause_number": "5",
+          "text": "Jedes Mitglied kann bis spätestens zwei Tage vor der Mitgliederversammlung beim Vorstand in Textform eine Ergänzung der Tagesordnung verlangen. Lehnt der Vorstand die Ergänzung ab, entscheidet die Mitgliederversammlung über das Ergänzungsverlangen."
+        },
+        {
+          "clause_number": "6",
+          "text": "Der Vorstand hat eine außerordentliche Mitgliederversammlung einzuberufen, wenn es die Interessen des Vereins erfordern oder wenn mindestens ein Zehntel der Mitglieder dies in Textform unter Angabe des Zwecks und der Gründe beantragt."
+        },
+        {
+          "clause_number": "7",
+          "text": "Die Mitgliederversammlung wird vom 1. Vorsitzenden oder bei dessen Verhinderung von einem seiner Stellvertreter geleitet."
+        },
+        {
+          "clause_number": "8",
+          "text": "Die Mitgliederversammlung beschließt in offener Abstimmung mit der Mehrheit der teilnehmenden Mitglieder, sofern nicht durch diese Satzung oder Gesetz eine andere Mehrheit vorgeschrieben ist."
+        },
+        {
+          "clause_number": "9",
+          "text": "Über den Ablauf der Mitgliederversammlung und die gefassten Beschlüsse ist ein Protokoll zu fertigen, das vom Versammlungsleiter und dem Protokollführer zu unterzeichnen ist. Das Protokoll ist in eine Protokollsammlung aufzunehmen."
+        }
+      ]
+    },
+    {
+      "section_number": 9,
+      "section_title": "Beirat",
+      "page_span": [
+        4,
+        4
+      ],
+      "clauses": [
+        {
+          "clause_number": "1",
+          "text": "Zur Beratung in wissenschaftlichen Fragen kann der Vorstand einen Beirat berufen."
+        },
+        {
+          "clause_number": "2",
+          "text": "Der Beirat soll aus höchstens fünf Personen mit ausgewiesener Expertise in Fragen der Astronomie und/oder angrenzender Wissenschaften bestehen."
+        },
+        {
+          "clause_number": "3",
+          "text": "Die Berufung eines Beiratsmitglieds erfolgt durch einstimmigen Beschluss des Vorstands."
+        },
+        {
+          "clause_number": "4",
+          "text": "Der Beirat ernennt eines seiner Mitglieder zum Vorsitzenden. Der Vorsitzende beruft die Beiratssitzungen ein, wenn es die Interessen des Vereins erfordern, und führt die Geschäfte des Beirats."
+        }
+      ]
+    },
+    {
+      "section_number": 10,
+      "section_title": "Kassenprüfung",
+      "page_span": [
+        4,
+        4
+      ],
+      "clauses": [
+        {
+          "clause_number": null,
+          "text": "Die Kassenführung wird von zwei Rechnungsprüfern, die von der Mitgliederversammlung gewählt werden, geprüft. Die Rechnungsprüfer erstatten der Mitgliederversammlung Bericht."
+        }
+      ]
+    },
+    {
+      "section_number": 11,
+      "section_title": "Satzungsänderungen",
+      "page_span": [
+        4,
+        4
+      ],
+      "clauses": [
+        {
+          "clause_number": "1",
+          "text": "Satzungsänderungen sind von der Mitgliederversammlung mit einer Mehrheit von zwei Dritteln der teilnehmenden Mitglieder zu beschließen."
+        },
+        {
+          "clause_number": "2",
+          "text": "Die zur Beschlussfassung vorgesehene Satzungsänderung ist den Mitgliedern mindestens sechs Wochen vor dem Versammlungstermin in der in § 8 Ziffer 3 vorgeschriebenen Form bekanntzugeben."
+        }
+      ]
+    },
+    {
+      "section_number": 12,
+      "section_title": "Auflösung des Vereins",
+      "page_span": [
+        4,
+        4
+      ],
+      "clauses": [
+        {
+          "clause_number": "1",
+          "text": "Über die Auflösung des Vereins entscheidet die Mitgliederversammlung mit einer Mehrheit von neun Zehnteln der teilnehmenden Mitglieder. Die zur Beschlussfassung vorgesehene Auflösung ist den Mitgliedern mindestens sechs Wochen vor dem Versammlungstermin in der in § 8 Ziffer 3 vorgeschriebenen Form bekanntzugeben."
+        },
+        {
+          "clause_number": "2",
+          "text": "Liquidatoren des Vereins sind die Mitglieder des vertretungsberechtigten Vorstands, sofern die Mitgliederversammlung keine anderen Personen beruft. Die Liquidatoren sind einzelvertretungsberechtigt."
+        },
+        {
+          "clause_number": "3",
+          "text": "Bei Auflösung des Vereins oder bei Wegfall der steuerbegünstigten Zwecke fällt das Vermögen des Vereins an eine andere steuerbegünstigte Körperschaft, deren Zweck die Förderung der Wissenschaft und Forschung mit Bezug zur Astronomie ist, die es unmittelbar und ausschließlich für gemeinnützige Zwecke zu verwenden hat."
+        }
+      ]
+    }
+  ],
+  "entities": {
+    "organization": [
+      {
+        "entity_id": "org_avv",
+        "type": "verein",
+        "name": "Astronomische Vereinigung Vulkaneifel am Hohen List e.V.",
+        "seat": "Schalkenmehren im Landkreis Vulkaneifel",
+        "business_year": "Kalenderjahr"
+      }
+    ],
+    "membership_types": [
+      {
+        "entity_id": "membership_regular",
+        "type": "mitgliedschaftsart",
+        "name": "ordentliche Mitglieder"
+      },
+      {
+        "entity_id": "membership_honorary",
+        "type": "mitgliedschaftsart",
+        "name": "Ehrenmitglieder"
+      }
+    ],
+    "organs": [
+      {
+        "entity_id": "organ_vorstand",
+        "type": "organ",
+        "name": "Vorstand"
+      },
+      {
+        "entity_id": "organ_mitgliederversammlung",
+        "type": "organ",
+        "name": "Mitgliederversammlung"
+      },
+      {
+        "entity_id": "organ_beirat",
+        "type": "gremium",
+        "name": "Beirat"
+      }
+    ],
+    "roles": [
+      {
+        "entity_id": "role_first_chair",
+        "type": "rolle",
+        "name": "1. Vorsitzender"
+      },
+      {
+        "entity_id": "role_deputy_chair",
+        "type": "rolle",
+        "name": "Stellvertreter",
+        "count": 2
+      },
+      {
+        "entity_id": "role_treasurer",
+        "type": "rolle",
+        "name": "Schatzmeister"
+      },
+      {
+        "entity_id": "role_board_member",
+        "type": "rolle",
+        "name": "weiteres Vorstandsmitglied",
+        "count": 3
+      },
+      {
+        "entity_id": "role_auditor",
+        "type": "rolle",
+        "name": "Rechnungsprüfer",
+        "count": 2
+      },
+      {
+        "entity_id": "role_liquidator",
+        "type": "rolle",
+        "name": "Liquidator"
+      }
+    ],
+    "legal_references": [
+      {
+        "reference_id": "law_ao",
+        "citation": "Abgabenordnung",
+        "context": "Steuerbegünstigte Zwecke"
+      },
+      {
+        "reference_id": "law_estg_3_26a",
+        "citation": "§ 3 Nr. 26a EStG"
+      },
+      {
+        "reference_id": "law_bgb_26_1",
+        "citation": "§ 26 Abs. 1 BGB"
+      },
+      {
+        "reference_id": "law_bgb_30",
+        "citation": "§ 30 BGB"
+      }
+    ]
+  },
+  "governance_model": {
+    "board": {
+      "size": 7,
+      "composition": [
+        "1. Vorsitzender",
+        "zwei Stellvertreter",
+        "Schatzmeister",
+        "drei weitere Vorstandsmitglieder"
+      ],
+      "term_years": 2,
+      "eligibility": [
+        "natürliche Person",
+        "zugleich Mitglied des Vereins"
+      ],
+      "continuity_rule": "Vorstandsmitglieder bleiben nach Ablauf der regulären Amtszeit bis zur nächsten Mitgliederversammlung im Amt.",
+      "replacement_rule": "Bei vorzeitigem Ausscheiden können die verbleibenden Vorstandsmitglieder Ämter einstimmig neu verteilen und ein Vereinsmitglied bis zur nächsten Mitgliederversammlung kooptieren.",
+      "management_basis": "Geschäftsordnung",
+      "special_representatives_possible": true,
+      "special_representative_domains": [
+        "Öffentlichkeitsarbeit",
+        "Veranstaltungsmanagement",
+        "Betreuung der Mitglieder",
+        "Justiziariat"
+      ]
+    },
+    "representation_rules": {
+      "single_representation_external": [
+        "1. Vorsitzender",
+        "beide Stellvertreter",
+        "Schatzmeister"
+      ],
+      "joint_representation_required_for": [
+        "Erwerb von Grundstücken",
+        "Veräußerung von Grundstücken",
+        "Erwerb grundstücksgleicher Rechte",
+        "Veräußerung grundstücksgleicher Rechte",
+        "Verbindlichkeiten von mehr als EUR 5.000 im Einzelfall"
+      ],
+      "joint_representation_count": 2,
+      "internal_regulation_possible": "Mitgliederversammlung kann Vertretungsordnung beschließen."
+    },
+    "member_assembly": {
+      "minimum_frequency": "mindestens einmal im Jahr",
+      "target_quarter": "zweites Quartal",
+      "notice_period": "vier Wochen",
+      "invitation_form": [
+        "Textform an bereitgestellte E-Mail-Adresse",
+        "alternativ an letzte bekannte postalische Anschrift"
+      ],
+      "agenda_required": true,
+      "electronic_participation_optional": true,
+      "agenda_extension_deadline": "spätestens zwei Tage vor der Mitgliederversammlung",
+      "extraordinary_threshold": "mindestens ein Zehntel der Mitglieder",
+      "chairing_order": [
+        "1. Vorsitzender",
+        "einer seiner Stellvertreter bei Verhinderung"
+      ],
+      "default_voting_rule": "offene Abstimmung mit Mehrheit der teilnehmenden Mitglieder",
+      "minutes_required": true
+    },
+    "advisory_board": {
+      "optional": true,
+      "max_size": 5,
+      "purpose": "Beratung in wissenschaftlichen Fragen",
+      "appointment_rule": "einstimmiger Beschluss des Vorstands",
+      "chair_selected_by": "Beirat aus eigener Mitte"
+    },
+    "cash_audit": {
+      "auditor_count": 2,
+      "elected_by": "Mitgliederversammlung",
+      "report_to": "Mitgliederversammlung"
+    }
+  },
+  "membership_rules": {
+    "regular_membership": {
+      "eligible_persons": [
+        "jede natürliche Person ab Vollendung des 16. Lebensjahres",
+        "jede juristische Person"
+      ],
+      "application_form": "Textform",
+      "minor_requirement": "Zustimmungserklärung der Erziehungsberechtigten",
+      "admission_decision_maker": "Vorstand",
+      "admission_discretion": "freies Ermessen",
+      "rejection_reason_required": false
+    },
+    "honorary_membership": {
+      "condition": "besondere Verdienste um Observatorium Hoher List, Verein oder Astronomie",
+      "proposal_by": [
+        "Vorstand",
+        "mindestens zehn Mitglieder"
+      ],
+      "decision_by": "Mitgliederversammlung"
+    },
+    "termination": {
+      "regular_causes": [
+        "Tod",
+        "bei juristischen Personen: Erlöschen",
+        "Austritt",
+        "Ausschluss"
+      ],
+      "resignation": {
+        "form": "Textform gegenüber dem Vorstand",
+        "effective_time": "zum Schluss eines Geschäftsjahres",
+        "deadline": "spätestens 30. September eines Jahres"
+      },
+      "exclusion": {
+        "decision_by": "Mitgliederversammlung",
+        "requires_important_reason": true,
+        "example_reasons": [
+          "nachhaltiges Zuwiderhandeln gegen die Ziele des Vereins",
+          "Schädigung des Vereins",
+          "Beitragsrückstand über ein Jahr und zweimalige erfolglose Zahlungsaufforderung"
+        ],
+        "arrears_remain_due": true
+      }
+    }
+  },
+  "rights_and_obligations": {
+    "member_rights": [
+      "Nutzung der Einrichtungen des Vereins entsprechend der Hausordnung",
+      "Teilnahme an den angebotenen Veranstaltungen des Vereins",
+      "eine Stimme in der Mitgliederversammlung",
+      "persönliche Ausübung des Stimmrechts",
+      "Anspruch auf Tagesordnungsergänzungsverlangen innerhalb der Frist",
+      "Möglichkeit elektronischer Teilnahme, sofern vorgesehen"
+    ],
+    "member_obligations": [
+      "Zahlung von Jahresbeiträgen",
+      "Einhaltung der Hausordnung"
+    ],
+    "board_obligations": [
+      "Führung der Geschäfte",
+      "Beschluss einer Hausordnung einstimmig",
+      "Beschluss der Geschäftsordnung und ihrer Änderungen einstimmig",
+      "Einberufung einer ordentlichen Mitgliederversammlung mindestens einmal jährlich",
+      "Einberufung einer außerordentlichen Mitgliederversammlung bei Erforderlichkeit oder qualifiziertem Mitgliederantrag"
+    ],
+    "documentation_obligations": [
+      "Protokoll über Ablauf und Beschlüsse der Mitgliederversammlung",
+      "Unterzeichnung durch Versammlungsleiter und Protokollführer",
+      "Aufnahme in eine Protokollsammlung"
+    ]
+  },
+  "financial_rules": {
+    "non_profit_constraints": [
+      "Mittel nur für satzungsmäßige Zwecke",
+      "keine Zuwendungen an Mitglieder in ihrer Eigenschaft als Mitglieder",
+      "keine Begünstigung durch zweckfremde Ausgaben oder unverhältnismäßig hohe Vergütungen"
+    ],
+    "expense_reimbursement": {
+      "eligible_persons": [
+        "Mitglieder",
+        "Organe des Vereins"
+      ],
+      "scope": "verauslagte Aufwendungen im Zusammenhang mit der Amtsausübung",
+      "basis": "im Rahmen der Beschlüsse des Vorstands",
+      "claim_deadline": "innerhalb von 3 Monaten nach Entstehung",
+      "evidence_required": "prüffähige Belege"
+    },
+    "compensation": {
+      "possible": true,
+      "decision_by": "Mitgliederversammlung",
+      "legal_basis": "§ 3 Nr. 26a EStG",
+      "implementation_by": "Vorstand"
+    },
+    "membership_fees": {
+      "annual_fees_required": true,
+      "entry_year_fee_free": true,
+      "honorary_members_fee_exempt": true,
+      "board_may_reduce_defer_waive": true,
+      "fee_rules_source": "Beitragsordnung",
+      "fee_rules_decided_by": "Vorstand nach Anhörung der Mitgliederversammlung",
+      "special_assessments_possible": true,
+      "special_assessments_decided_by": "Mitgliederversammlung"
+    }
+  },
+  "decision_rules": {
+    "default_member_assembly_majority": "Mehrheit der teilnehmenden Mitglieder",
+    "statute_amendment_majority": "zwei Drittel der teilnehmenden Mitglieder",
+    "dissolution_majority": "neun Zehntel der teilnehmenden Mitglieder",
+    "pre_announcement_for_statute_amendment": "mindestens sechs Wochen",
+    "pre_announcement_for_dissolution": "mindestens sechs Wochen"
+  },
+  "deadlines_and_thresholds": [
+    {
+      "type": "deadline",
+      "name": "Austrittserklärung",
+      "value": "30. September",
+      "reference": "§ 4 Nr. 5"
+    },
+    {
+      "type": "deadline",
+      "name": "Aufwendungsersatz",
+      "value": "3 Monate nach Entstehung",
+      "reference": "§ 3 Nr. 3"
+    },
+    {
+      "type": "deadline",
+      "name": "Einberufungsfrist ordentliche Mitgliederversammlung",
+      "value": "4 Wochen",
+      "reference": "§ 8 Nr. 2"
+    },
+    {
+      "type": "deadline",
+      "name": "Tagesordnungsergänzung",
+      "value": "2 Tage vor Mitgliederversammlung",
+      "reference": "§ 8 Nr. 5"
+    },
+    {
+      "type": "deadline",
+      "name": "Bekanntgabe Satzungsänderung",
+      "value": "6 Wochen vor Versammlungstermin",
+      "reference": "§ 11 Nr. 2"
+    },
+    {
+      "type": "deadline",
+      "name": "Bekanntgabe Auflösung",
+      "value": "6 Wochen vor Versammlungstermin",
+      "reference": "§ 12 Nr. 1"
+    },
+    {
+      "type": "threshold",
+      "name": "Antrag außerordentliche Mitgliederversammlung",
+      "value": "mindestens ein Zehntel der Mitglieder",
+      "reference": "§ 8 Nr. 6"
+    },
+    {
+      "type": "threshold",
+      "name": "Gemeinschaftliche Vertretung bei Verbindlichkeiten",
+      "value": "mehr als EUR 5.000 im Einzelfall",
+      "reference": "§ 7 Nr. 5"
+    },
+    {
+      "type": "threshold",
+      "name": "Beiratsgröße",
+      "value": "höchstens fünf Personen",
+      "reference": "§ 9 Nr. 2"
+    },
+    {
+      "type": "threshold",
+      "name": "Ehrenmitglied-Vorschlag durch Mitglieder",
+      "value": "mindestens zehn Mitglieder",
+      "reference": "§ 4 Nr. 2"
+    }
+  ],
+  "cross_references": [
+    {
+      "from": "§ 3 Nr. 4",
+      "to": "§ 3 Nr. 26a EStG",
+      "type": "gesetzesverweis"
+    },
+    {
+      "from": "§ 7 Nr. 5",
+      "to": "§ 26 Abs. 1 BGB",
+      "type": "gesetzesverweis"
+    },
+    {
+      "from": "§ 7 Nr. 6",
+      "to": "§ 30 BGB",
+      "type": "gesetzesverweis"
+    },
+    {
+      "from": "§ 11 Nr. 2",
+      "to": "§ 8 Ziffer 3",
+      "type": "interner_verweis"
+    },
+    {
+      "from": "§ 12 Nr. 1",
+      "to": "§ 8 Ziffer 3",
+      "type": "interner_verweis"
+    }
+  ]
+}
